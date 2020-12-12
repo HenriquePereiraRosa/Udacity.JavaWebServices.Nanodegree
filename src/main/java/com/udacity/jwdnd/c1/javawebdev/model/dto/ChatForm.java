@@ -2,16 +2,16 @@ package com.udacity.jwdnd.c1.javawebdev.model.dto;
 
 public class ChatForm {
 
-    private String username;
+    private String email;
     private String messageText;
     private String messageType;
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getMessageText() {

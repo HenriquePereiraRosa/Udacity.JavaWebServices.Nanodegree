@@ -1,7 +1,6 @@
 package com.udacity.jwdnd.c1.javawebdev;
 
-import com.udacity.jwdnd.c1.javawebdev.service.MessageService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.udacity.jwdnd.c1.javawebdev.service.ChatMessageService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -21,13 +20,13 @@ public class JavawebdevApplication {
 	}
 
 	@Bean
-	public String uppercaseMessage(MessageService service)  {
+	public String uppercaseMessage(ChatMessageService service)  {
 		System.out.println(" -> UppercaseMessage Bean created");
 		return service.messageUpper();
 	}
 
 	@Bean
-	public String lowercaseMessage(MessageService service)  {
+	public String lowercaseMessage(ChatMessageService service)  {
 		System.out.println(" -> LowercaseMessage Bean created");
 		return service.messageLower();
 	}

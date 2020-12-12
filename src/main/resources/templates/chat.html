@@ -13,8 +13,8 @@
 <div class="container">
     <form th:action="@{/chat}" th:object="${chatForm}" method="POST">
         <div>
-            <label for="username">Username:</label>
-            <input id="username" type="text" th:field="*{username}">
+            <label for="email">Email:</label>
+            <input id="email" type="text" th:field="*{email}">
         </div>
         <div>
             <label for="messageText">Message Text:</label>
@@ -26,21 +26,18 @@
                 <option
                         th:each="type : ${allMessageTypes}"
                         th:value="${type}"
-                        th:text="${type}"
-                >
-                    Say
-                </option>
+                        th:text="${type}">Say</option>
             </select>
         </div>
         <div>
             <input type="submit">
         </div>
     </form>
-    <h1 th:each="msg : ${chatMessages}">
-        <span th:text="${msg.username}"></span>
+    <h3 th:each="msg : ${chatMessages}">
+        <span th:text="${msg.email}"></span>
         <span> : </span>
         <span th:text="${msg.message}"></span>
-    </h1>
+    </h3>
 </div>
 </body>
 </html>
