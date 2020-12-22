@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS USERS (
+id INT PRIMARY KEY auto_increment,
+email VARCHAR(50),
+salt VARCHAR,
+password VARCHAR,
+firstname VARCHAR(20),
+lastname VARCHAR(20)
+);
+
+CREATE TABLE IF NOT EXISTS CHAT_MESSAGES (
+id INT PRIMARY KEY auto_increment,
+email VARCHAR NOT NULL,
+messagetext VARCHAR NOT NULL
+);
