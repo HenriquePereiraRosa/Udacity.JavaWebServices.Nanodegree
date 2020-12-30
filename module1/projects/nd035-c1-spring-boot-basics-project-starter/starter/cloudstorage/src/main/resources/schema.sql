@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS FILES (
     id INT PRIMARY KEY auto_increment,
     filename VARCHAR,
     contenttype VARCHAR,
-    filesize VARCHAR,
+    filesize INT,
     userid INT,
     filedata BLOB,
     foreign key (userid) references USERS(id)

@@ -1,21 +1,23 @@
 package com.udacity.jwdnd.course1.cloudstorage.model.entity;
 
+import java.util.Objects;
+
 public class File {
 
     private Integer id;
-    private String username;
-    private String salt;
-    private String password;
-    private String firstname;
-    private String lastname;
+    private String filename;
+    private String contenttype;
+    private Long filesize;
+    private Integer userid;
+    private byte[] filedata;
 
-    public File(Integer id, String email, String salt, String password, String firstname, String lastname) {
+    public File(Integer id, String filename, String contenttype, Long filesize, Integer userid, byte[] filedata) {
         this.id = id;
-        this.username = email;
-        this.salt = salt;
-        this.password = password;
-        this.firstname = firstname;
-        this.lastname = lastname;
+        this.filename = filename;
+        this.contenttype = contenttype;
+        this.filesize = filesize;
+        this.userid = userid;
+        this.filedata = filedata;
     }
 
     public Integer getId() {
@@ -26,43 +28,56 @@ public class File {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getFilename() {
+        return filename;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 
-    public String getSalt() {
-        return salt;
+    public String getContenttype() {
+        return contenttype;
     }
 
-    public void setSalt(String salt) {
-        this.salt = salt;
+    public void setContenttype(String contenttype) {
+        this.contenttype = contenttype;
     }
 
-    public String getPassword() {
-        return password;
+    public Long getFilesize() {
+        return filesize;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setFilesize(Long filesize) {
+        this.filesize = filesize;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public Integer getUserid() {
+        return userid;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setUserid(Integer userid) {
+        this.userid = userid;
     }
 
-    public String getLastname() {
-        return lastname;
+    public byte[] getFiledata() {
+        return filedata;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setFiledata(byte[] filedata) {
+        this.filedata = filedata;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof File)) return false;
+        File file = (File) o;
+        return filename.equals(file.filename);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(filename);
     }
 }
