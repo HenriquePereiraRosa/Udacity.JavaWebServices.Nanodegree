@@ -29,4 +29,8 @@ public class FileService {
     public Integer deleteFile(String filename) {
         return fileMapper.deleteFile(filename);
     }
+
+    public Set<File> getFilesById(Integer id) {
+        return fileMapper.getFilesById(id);
+    }
 }

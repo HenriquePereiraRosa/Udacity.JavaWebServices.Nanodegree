@@ -28,7 +28,8 @@
         </nav>
         <div class="tab-content" id="nav-tabContent">
             <div class="tab-pane fade show active" id="nav-files" role="tabpanel" aria-labelledby="nav-files-tab">
-                <form enctype="multipart/form-data" th:action="@{/home/upload-file}" method="POST">
+                <form enctype="multipart/form-data"
+                      th:action="@{|/home/upload-file|}" method="POST">
                     <div class="container">
                         <div class="row" style="margin: 1em;">
                             <div class="col-sm-2">
@@ -41,6 +42,9 @@
                                 <button type="submit" class="btn btn-dark">Upload</button>
                             </div>
                         </div>
+                    </div>
+                    <div class="row alert alert-danger" th:if="${errorUpload}"
+                         id="upload-error-msg" th:text="${errorUpload}">
                     </div>
                 </form>
                 <div class="table-responsive">
@@ -90,13 +94,16 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
+                        <tr id="notes" th:each="note : ${notes}">
                             <td>
-                                <button type="button" class="btn btn-success">Edit</button>
-                                <a class="btn btn-danger">Delete</a>
+                                <a class="btn btn-success"
+                                   th:onclick="showNoteModal([[${note.id}]],
+                                    [[${note.noteTitle}]], [[${note.noteDescription}]])">Edit</a>
+                                <a th:href="@{|/home/delete-note/?title=${note.noteTitle}|}"
+                                   class="btn btn-danger">Delete</a>
                             </td>
-                            <th scope="row">Example Note Title</th>
-                            <td>Example Note Description</td>
+                            <th scope="row" th:text="${note.noteTitle}"></th>
+                            <td th:text="${note.noteDescription}"></td>
                         </tr>
                         </tbody>
                     </table>
@@ -113,7 +120,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form action="#" method="POST">
+                                <form action="#" th:action="@{|/home/note|}" method="POST">
                                     <input type="hidden" name="noteId" id="note-id">
                                     <div class="form-group">
                                         <label for="note-title" class="col-form-label">Title</label>
@@ -127,6 +134,9 @@
                                     </div>
                                     <button id="noteSubmit" type="submit" class="d-none"></button>
                                 </form>
+                                <div class="row alert alert-danger" th:if="${errorNote}"
+                                     id="note-error-msg" th:text="${errorNote}">
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -235,6 +245,15 @@
                 $('#credential-password').val(password ? password : '');
                 $('#credentialModal').modal('show');
             }
+
+
+
+
+
+
+
+
+
 
 
 </script>

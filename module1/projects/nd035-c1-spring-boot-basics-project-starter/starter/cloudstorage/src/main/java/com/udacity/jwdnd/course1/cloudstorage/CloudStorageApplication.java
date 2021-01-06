@@ -33,12 +33,19 @@ public class CloudStorageApplication {
         String encodedSalt = hashService.createEncodedSalt();
         String hashedPass = hashService.getHashedValue("123", encodedSalt);
         Integer id = userMapper.insertUser(new User(null,
-                "teste",
+                "test1",
                 encodedSalt,
                 hashedPass,
-                "Teste01",
+                "Test01",
                 "Last Name"));
-        logger.info("User Teste saved: " + id);
+        logger.info("User test1 saved: " + id);
+        id = userMapper.insertUser(new User(null,
+                "test2",
+                encodedSalt,
+                hashedPass,
+                "Test02",
+                "Last Name"));
+        logger.info("User test2 saved: " + id);
         ;
     }
 
