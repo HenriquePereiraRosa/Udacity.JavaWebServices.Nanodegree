@@ -7,7 +7,7 @@ import com.udacity.jwdnd.course1.cloudstorage.model.entity.User;
 import com.udacity.jwdnd.course1.cloudstorage.service.CredentialService;
 import com.udacity.jwdnd.course1.cloudstorage.service.FileService;
 import com.udacity.jwdnd.course1.cloudstorage.service.NoteService;
-import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
+import com.udacity.jwdnd.course1.cloudstorage.service.UserService;
 import org.apache.ibatis.annotations.Param;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +57,7 @@ public class HomeController {
 
         Set<File> files = fileService.getFilesById(user.getId());
         List<Note> notes = noteService.getAllByUserId(user.getId());
-        List<Credential> credentials = credentialService.getAllById(user.getId());
+        List<Credential> credentials = credentialService.getAllByUserId(user.getId());
         if (user == null) {
             model.addAttribute("errorUpload",
                     "Not files found from this Username!");
@@ -76,19 +76,6 @@ public class HomeController {
         model.addAttribute("notes", notes);
         model.addAttribute("credentials", credentials);
         return "home";
-    }
-
-    @GetMapping("/files")
-    public Set<File> getFilesByUsername(@Param(value = "username") String username,
-                                        Model model) {
-        User user = userService.getUserByUsername(username);
-        if (user == null) {
-            model.addAttribute("errorUpload",
-                    "Files not found from this Username!");
-            return null;
-        }
-        Set<File> files = fileService.getFilesById(user.getId());
-        return files;
     }
 
     @GetMapping("/logout")
@@ -201,27 +188,100 @@ public class HomeController {
                 || reqNote.getNoteDescription().isEmpty()) {
             model.addAttribute("errorNote", "Note fields can't be void!");
         }
-            Note noteDb = noteService.getByName(reqNote.getNoteTitle());
-            if (noteDb != null) {
-                noteDb.setNoteTitle(reqNote.getNoteTitle());
-                noteDb.setNoteDescription(reqNote.getNoteDescription());
-                Integer id = noteService.updateOne(noteDb); // todo:  use ID returned
-                model.addAttribute("notes", this.noteService.getAllByUserId(user.getId()));
-                model.addAttribute("errorNote", null);
-                return "home";
-            }
-            try {
-                Note note = new Note(null,
-                        reqNote.getNoteTitle(),
-                        reqNote.getNoteDescription(),
-                        user.getId());
-                Integer id = noteService.saveOne(note); // todo:  use ID returned
-                model.addAttribute("notes", this.noteService.getAllByUserId(user.getId()));
-                model.addAttribute("errorNote", null);
-            } catch (Exception e) {
-                model.addAttribute("errorNote", "Error saving a note!");
-                return "home";
-            }
+        Note noteDb = noteService.getByTitle(reqNote.getNoteTitle());
+        if (noteDb != null) {
+            noteDb.setNoteTitle(reqNote.getNoteTitle());
+            noteDb.setNoteDescription(reqNote.getNoteDescription());
+            Integer id = noteService.updateOne(noteDb); // todo:  use ID returned
+            model.addAttribute("notes", this.noteService.getAllByUserId(user.getId()));
+            model.addAttribute("errorNote", null);
+            return "home";
+        }
+        try {
+            Note note = new Note(null,
+                    reqNote.getNoteTitle(),
+                    reqNote.getNoteDescription(),
+                    user.getId());
+            Integer id = noteService.saveOne(note); // todo:  use ID returned
+            model.addAttribute("notes", this.noteService.getAllByUserId(user.getId()));
+            model.addAttribute("errorNote", null);
+        } catch (Exception e) {
+            model.addAttribute("errorNote", "Error saving a note!");
+            return "home";
+        }
+        return "home";
+    }
+
+    @GetMapping("/delete-note/{title}")
+    public String deleteNote(@PathVariable String title, Model model) throws IOException {
+        Integer id = noteService.deleteByTitle(title);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) auth.getPrincipal();
+        User user = userService.getUserByUsername(username);
+        model.addAttribute("notes", this.noteService.getAllByUserId(user.getId()));
+        return "home";
+    }
+
+
+    @PostMapping("/credential")
+    public String saveCredential(@ModelAttribute Credential reqCredential,
+                           Model model,
+                           HttpServletRequest req,
+                           HttpServletResponse res) {
+        System.out.println("Post Mapping saveCredential(..): " + reqCredential.getUrl()); // todo debug
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) auth.getPrincipal();
+        User user = userService.getUserByUsername(username);
+        if (user == null) {
+            model.addAttribute("errorCredential",
+                    "ERROR User not found!");
+            return this.logout(req, res);
+        }
+
+        if (user == null) {
+            model.addAttribute("errorCredential", "User not found!");
+            return "home";
+        }
+
+        if (!reqCredential.getUrl().isEmpty()
+                || reqCredential.getUsername().isEmpty()
+                || reqCredential.getPassword().isEmpty()) {
+            model.addAttribute("errorCredential", "Credential fields can't be void!");
+        }
+        Credential credentialDb = credentialService.getByUrl(reqCredential.getUrl());
+        if (credentialDb != null) {
+            credentialDb.setUrl(reqCredential.getUrl());
+            credentialDb.setUsername(reqCredential.getUsername());
+            credentialDb.setPassword(reqCredential.getPassword());
+            Integer id = credentialService.updateOne(credentialDb); // todo:  use ID returned
+            model.addAttribute("credentials", this.credentialService.getAllByUserId(user.getId()));
+            model.addAttribute("errorCredential", null);
+            return "home";
+        }
+        try {
+            Credential credential = new Credential(null,
+                    reqCredential.getUrl(),
+                    reqCredential.getUsername(),
+                    null,
+                    reqCredential.getPassword(),
+                    user.getId());
+            Integer id = credentialService.saveOne(credential); // todo:  use ID returned
+            model.addAttribute("credentials", this.credentialService.getAllByUserId(user.getId()));
+            model.addAttribute("errorCredential", null);
+        } catch (Exception e) {
+            model.addAttribute("errorCredential", "Error saving a note!");
+            return "home";
+        }
+        return "home";
+    }
+
+    @GetMapping("/delete-credential/{url}")
+    public String deleteCredential(@PathVariable String url, Model model) throws IOException {
+        Integer id = credentialService.deleteByUrl(url);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) auth.getPrincipal();
+        User user = userService.getUserByUsername(username);
+        model.addAttribute("credentials", this.credentialService.getAllByUserId(user.getId()));
         return "home";
     }
 }

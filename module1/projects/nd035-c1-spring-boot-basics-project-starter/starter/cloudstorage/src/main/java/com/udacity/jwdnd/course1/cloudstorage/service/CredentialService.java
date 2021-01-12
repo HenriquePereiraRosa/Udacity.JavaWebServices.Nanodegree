@@ -12,21 +12,40 @@ public class CredentialService {
 
     @Autowired
     CredentialMapper credentialMapper;
+    @Autowired
+    EncryptionService encryptionService ;
+    @Autowired
+    HashService hashService;
 
     public Credential getByUrl(String url) {
         Credential credential = credentialMapper.getByUrl(url);
         return credential;
     }
 
-    public Integer saveFile(Credential credential) {
+    public Integer saveOne(Credential credential) {
+        String key =  hashService.createEncodedSalt();
+        String hashedPass = encryptionService
+                .encryptValue(credential.getPassword(), key);
+        credential.setKey(key);
+        credential.setPassword(hashedPass);
         return credentialMapper.insertOne(credential);
     }
 
-    public Integer deleteFile(String url) {
+    public Integer deleteByUrl(String url) {
         return credentialMapper.deleteByUrl(url);
     }
 
-    public List<Credential> getAllById(Integer id) {
-        return credentialMapper.getByUserId(id);
+    public List<Credential> getAllByUserId(Integer id) {
+        List<Credential> credentials = credentialMapper.getByUserId(id);
+        for (int i = 0; i < credentials.size(); i++) {
+            Credential item = credentials.get(i);
+            credentials.get(i).setPassword(encryptionService
+                    .decryptValue(item.getPassword(), item.getKey()));
+        }
+        return credentials;
+    }
+
+    public Integer updateOne(Credential credential) {
+        return credentialMapper.updateOne(credential);
     }
 }

@@ -2,8 +2,8 @@ package com.udacity.jwdnd.course1.cloudstorage;
 
 import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
 import com.udacity.jwdnd.course1.cloudstorage.model.entity.User;
-import com.udacity.jwdnd.course1.cloudstorage.services.HashService;
-import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
+import com.udacity.jwdnd.course1.cloudstorage.service.HashService;
+import com.udacity.jwdnd.course1.cloudstorage.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,23 +30,23 @@ public class CloudStorageApplication {
 
     @Bean
     public void createUserTest() {
+        // todo remove after release
         String encodedSalt = hashService.createEncodedSalt();
         String hashedPass = hashService.getHashedValue("123", encodedSalt);
         Integer id = userMapper.insertUser(new User(null,
-                "test1",
+                "t1",
                 encodedSalt,
                 hashedPass,
                 "Test01",
                 "Last Name"));
         logger.info("User test1 saved: " + id);
         id = userMapper.insertUser(new User(null,
-                "test2",
+                "t2",
                 encodedSalt,
                 hashedPass,
                 "Test02",
                 "Last Name"));
         logger.info("User test2 saved: " + id);
-        ;
     }
 
 }

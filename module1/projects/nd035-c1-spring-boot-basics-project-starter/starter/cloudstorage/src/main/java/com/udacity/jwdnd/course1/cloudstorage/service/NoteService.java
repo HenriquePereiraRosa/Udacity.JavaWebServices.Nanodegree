@@ -13,7 +13,7 @@ public class NoteService {
     @Autowired
     NoteMapper mapper;
 
-    public Note getByName(String noteTitle) {
+    public Note getByTitle(String noteTitle) {
         return mapper.getByTitle(noteTitle);
     }
 

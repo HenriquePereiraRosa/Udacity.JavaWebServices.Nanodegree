@@ -1,8 +1,8 @@
-package com.udacity.jwdnd.c1.javawebdev.service;
+package com.udacity.jwdnd.course1.cloudstorage.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -12,21 +12,21 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Base64;
 
-@Service
+@Component
 public class HashService {
-
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(HashService.class);
 
     public String getHashedValue(String data, String salt) {
         byte[] hashedValue = null;
 
-        KeySpec keySpec = new PBEKeySpec(data.toCharArray(), salt.getBytes(), 500, 128);
-        try{
-                SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-                hashedValue = secretKeyFactory.generateSecret(keySpec).getEncoded();
-            } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-                logger.error(e.getMessage());
-            }
+        KeySpec spec = new PBEKeySpec(data.toCharArray(), salt.getBytes(), 5000, 128);
+        try {
+            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            hashedValue = factory.generateSecret(spec).getEncoded();
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
+            logger.error(e.getMessage());
+        }
+
         return Base64.getEncoder().encodeToString(hashedValue);
     }
 
