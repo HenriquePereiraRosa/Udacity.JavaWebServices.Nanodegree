@@ -41,7 +41,7 @@ class CloudStorageApplicationTests {
 
         String firstname = "User";
         String lastname = "Very Quazy";
-        email = "quazy.user@server.com";
+        email = "quazy.user@email.com";
         password = "123456";
 
         SignUpPage signUpPage = new SignUpPage(driver);
