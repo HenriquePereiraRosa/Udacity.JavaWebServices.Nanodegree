@@ -70,7 +70,7 @@ public class NoteTab {
         WebElement homeWait = wait.until(webDriver ->
                 webDriver.findElement(By.id("btn-delete-note")));
         for (WebElement note : notes) {
-            String noteTitle = note.getText();
+            String noteTitle = note.getAttribute("innerHTML");
             System.out.println(noteTitle);
             if (noteTitle.contains(title))
                 return true;
