@@ -1,8 +1,13 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
-import com.udacity.jwdnd.course1.cloudstorage.view.HomePage;
-import com.udacity.jwdnd.course1.cloudstorage.view.LoginPage;
-import com.udacity.jwdnd.course1.cloudstorage.view.SignUpPage;
+import com.udacity.jwdnd.course1.cloudstorage.mapper.NoteMapper;
+import com.udacity.jwdnd.course1.cloudstorage.service.CredentialService;
+import com.udacity.jwdnd.course1.cloudstorage.service.NoteService;
+import com.udacity.jwdnd.course1.cloudstorage.service.UserService;
+import com.udacity.jwdnd.course1.cloudstorage.view.home.CredentialTab;
+import com.udacity.jwdnd.course1.cloudstorage.view.home.NoteTab;
+import com.udacity.jwdnd.course1.cloudstorage.view.login.LoginPage;
+import com.udacity.jwdnd.course1.cloudstorage.view.signup.SignUpPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
@@ -11,9 +16,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.util.Assert;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CloudStorageApplicationTests {
@@ -21,6 +26,11 @@ class CloudStorageApplicationTests {
     public static WebDriver driver;
     private String email;
     private String password;
+
+    @Autowired
+    NoteService noteService;
+    @Autowired
+    CredentialService credentialService;
 
     @LocalServerPort // (Spring) allow injection od server`s Port
     private Integer port;
@@ -79,12 +89,22 @@ class CloudStorageApplicationTests {
     }
 
     @Test
-    public void doSuccessfulLogin() throws InterruptedException {
+    public void doSuccessfulLoginAndLogout() throws InterruptedException {
+        WebDriverWait wait = new WebDriverWait(driver, 5);
         driver.get(baseURL);
         LoginPage loginPage = new LoginPage(driver);
         loginPage.login(email, password);
-        HomePage homePage = new HomePage(driver);
+
+        wait.until(webDriver ->
+                webDriver.findElement(By.tagName("title")));
+
+        NoteTab noteTab = new NoteTab(driver, noteService);
         Assertions.assertEquals("Home", driver.getTitle());
+
+        noteTab.logout();
+        wait.until(webDriver ->
+                webDriver.findElement(By.tagName("title")));
+        Assertions.assertEquals("Login", driver.getTitle());
     }
 
 
@@ -95,18 +115,41 @@ class CloudStorageApplicationTests {
         LoginPage loginPage = new LoginPage(driver);
         loginPage.login(email, password);
 
-        WebElement homeWait = wait.until(webDriver ->
+        wait.until(webDriver ->
                 webDriver.findElement(By.tagName("title")));
 
-        HomePage homePage = new HomePage(driver);
+        NoteTab noteTab = new NoteTab(driver, noteService);
         Assertions.assertEquals("Home", driver.getTitle());
 
         String noteTitle = "Note Title Test";
         String noteDescription = "Note Description Test";
 //        wait.until(ExpectedConditions
 //                .presenceOfElementLocated(By.id("btn-add-note")));
-        homePage.addNote(noteTitle, noteDescription);
-        Assertions.assertTrue(homePage.checkIfNoteExists(noteTitle));
+        noteTab.addNote(noteTitle, noteDescription);
+        Assertions.assertTrue(noteTab.checkIfNoteExists(noteTitle));
+        Assertions.assertTrue(noteTab
+                .checkNoteDescription(noteTitle, noteDescription));
+    }
+
+
+    @Test
+    public void createCredtialAndVerifyDisplayed() throws InterruptedException {
+        WebDriverWait wait = new WebDriverWait(driver, 5);
+        driver.get(baseURL);
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.login(email, password);
+
+        WebElement homeWait = wait.until(webDriver ->
+                webDriver.findElement(By.tagName("title")));
+
+        CredentialTab credentialTab = new CredentialTab(driver, credentialService);
+        Assertions.assertEquals("Home", driver.getTitle());
+
+        String url = "google.com";
+        String username = "Note Title Test";
+        String password = "123";
+        credentialTab.addCredential(url, username, password);
+        Assertions.assertTrue(credentialTab.checkIfCredentialExists(url));
     }
 
 }
