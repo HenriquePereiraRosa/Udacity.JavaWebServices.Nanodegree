@@ -42,7 +42,7 @@ public class Note {
         return this.userid;
     }
 
-    public void setUser(Integer userid) {
+    public void setUserid(Integer userid) {
         this.userid = userid;
     }
 }

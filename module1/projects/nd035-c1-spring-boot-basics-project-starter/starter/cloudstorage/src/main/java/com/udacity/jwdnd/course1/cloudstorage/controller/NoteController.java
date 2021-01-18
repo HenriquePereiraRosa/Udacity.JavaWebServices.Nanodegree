@@ -55,25 +55,15 @@ public class NoteController {
 //            return "redirect:/result";
 //        }
         Note noteDb = noteService.getById(reqNote.getId());
-        if (noteDb != null) {
-            noteDb.setNoteTitle(reqNote.getNoteTitle());
-            noteDb.setNoteDescription(reqNote.getNoteDescription());
-            Integer id = noteService.updateOne(noteDb); // todo:  use ID returned
-//            model.addAttribute("notes", this.noteService.getAllByUserId(user.getId()));
+        if (reqNote.getId() == null) {
+            reqNote.setUserid(user.getId());
+            Integer id = noteService.saveOne(reqNote);
+            redirectAttributes.addFlashAttribute("success", true);
+        } else {
+            reqNote.setUserid(user.getId());
+            Integer id = noteService.updateOne(reqNote);
             redirectAttributes.addFlashAttribute("success", true);
             return "redirect:/result";
-        } else {
-            try {
-                Note note = new Note(null,
-                        reqNote.getNoteTitle(),
-                        reqNote.getNoteDescription(),
-                        user.getId());
-                Integer id = noteService.saveOne(note); // todo:  use ID returned
-//                model.addAttribute("notes", this.noteService.getAllByUserId(user.getId()));
-                redirectAttributes.addFlashAttribute("success", true);
-            } catch (Exception e) {
-                redirectAttributes.addFlashAttribute("message", "Error saving a note!");
-            }
         }
         return "redirect:/result";
     }
