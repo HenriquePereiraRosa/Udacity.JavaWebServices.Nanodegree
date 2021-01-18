@@ -53,7 +53,9 @@ public class CredentialService {
         Credential credentialDb = credentialMapper.getById(credential.getId());
         credentialDb.setUrl(credential.getUrl());
         credentialDb.setUsername(credential.getUsername());
-        credentialDb.setPassword(credential.getPassword());
+        credentialDb.setKey(hashService.createEncodedSalt());
+        credentialDb.setPassword(encryptionService
+                .encryptValue(credential.getPassword(), credentialDb.getKey()));
         return credentialMapper.updateOne(credentialDb);
     }
 
