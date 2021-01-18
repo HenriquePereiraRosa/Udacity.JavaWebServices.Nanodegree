@@ -66,6 +66,7 @@ public class HomeController {
         model.addAttribute("files", files);
         model.addAttribute("notes", notes);
         model.addAttribute("credentials", credentials);
+        model.addAttribute("encryptionService",encryptionService);
         return "home";
     }
 }
