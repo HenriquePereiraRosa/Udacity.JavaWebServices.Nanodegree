@@ -36,4 +36,8 @@ public class NoteService {
     public Integer deleteByTitle(String noteTitle) {
         return mapper.deleteByTitle(noteTitle);
     }
+
+    public Note getById(Integer id) {
+        return mapper.getById(id);
+    }
 }

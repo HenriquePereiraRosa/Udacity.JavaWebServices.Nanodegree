@@ -17,6 +17,10 @@ public class CredentialService {
     @Autowired
     HashService hashService;
 
+    public Credential getById(Integer id) {
+        return credentialMapper.getById(id);
+    }
+
     public Credential getByUrl(String url) {
         Credential credential = credentialMapper.getByUrl(url);
         return credential;
@@ -37,18 +41,23 @@ public class CredentialService {
 
     public List<Credential> getAllByUserId(Integer id) {
         List<Credential> credentials = credentialMapper.getByUserId(id);
-        for (int i = 0; i < credentials.size(); i++) {
-            Credential item = credentials.get(i);
-            credentials.get(i).setPassword(encryptionService
-                    .decryptValue(item.getPassword(), item.getKey()));
-        }
+//        for (int i = 0; i < credentials.size(); i++) {
+//            Credential item = credentials.get(i);
+//            credentials.get(i).setPassword(encryptionService
+//                    .decryptValue(item.getPassword(), item.getKey()));
+//        }
         return credentials;
     }
 
     public Integer updateOne(Credential credential) {
-        return credentialMapper.updateOne(credential);
+        Credential credentialDb = credentialMapper.getById(credential.getId());
+        credentialDb.setUrl(credential.getUrl());
+        credentialDb.setUsername(credential.getUsername());
+        credentialDb.setPassword(credential.getPassword());
+        return credentialMapper.updateOne(credentialDb);
     }
 
     public Integer deleteById(Integer id) { return credentialMapper.deteleById(id);
     }
+
 }

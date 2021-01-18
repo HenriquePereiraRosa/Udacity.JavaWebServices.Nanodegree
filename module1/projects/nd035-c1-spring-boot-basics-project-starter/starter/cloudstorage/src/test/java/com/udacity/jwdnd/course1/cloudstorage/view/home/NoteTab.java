@@ -71,12 +71,13 @@ public class NoteTab {
             System.out.println(noteRowHTML);
             if (noteRowHTML.contains(title)) {
                 WebElement btnEditItem =
-                        note.findElement(By.id("btn-edit-credential"));
+                        note.findElement(By.id("btn-edit-note"));
                 js.executeScript("arguments[0].click();", btnEditItem);
                 js.executeScript("arguments[0].click();", tabNotes);
-                js.executeScript("arguments[0].value='" + newTitle + "';", noteRowHTML);
+                js.executeScript("arguments[0].value='" + newTitle + "';", noteTitle);
                 js.executeScript("arguments[0].value='" + newDescription + "';", noteDescription);
                 js.executeScript("arguments[0].click();", noteSubmit);
+                return;
             }
         }
     }

@@ -9,6 +9,9 @@ import java.util.List;
 @Mapper
 public interface CredentialMapper {
 
+    @Select("select * from CREDENTIALS where id = #{id}")
+    Credential getById(Integer id);
+
     @Select("select * from CREDENTIALS where url = #{url}")
     Credential getByUrl(String url);
 
@@ -38,4 +41,5 @@ public interface CredentialMapper {
     @Delete("delete from CREDENTIALS where id = #{id}")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     Integer deteleById(Integer id);
+
 }

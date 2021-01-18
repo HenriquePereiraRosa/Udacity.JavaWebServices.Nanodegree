@@ -209,6 +209,35 @@ class CloudStorageApplicationTests {
                 .checkNoteDescription(noteTitle + 1, noteDescription + 1));
     }
 
+    @Test
+    public void createNoteAndEditIt() throws InterruptedException {
+        WebDriverWait wait = new WebDriverWait(driver, 2);
+
+        driver.get(baseURL);
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.login(this.email, this.credPassword);
+
+        wait.until(webDriver ->
+                webDriver.findElement(By.tagName("title")));
+
+        NoteTab noteTab = new NoteTab(driver, noteService);
+        Assertions.assertEquals("Home", driver.getTitle());
+
+        for (int i = 1; i < 4; i++) {
+            noteTab.addNote(noteTitle + i, noteDescription + i);
+        }
+        Assertions.assertTrue(noteTab.checkIfNoteExists(noteTitle + 1));
+        Assertions.assertTrue(noteTab
+                .checkNoteDescription(noteTitle + 1, noteDescription + 1));
+
+        String noteTitleEdited = noteTitle + " Edited";
+        String noteDescEdited = noteDescription + " Edited";
+        noteTab.editNote(noteTitle + 1, noteTitleEdited,  noteDescEdited);
+        Assertions.assertTrue(noteTab.checkIfNoteExists(noteTitleEdited));
+        Assertions.assertTrue(noteTab
+                .checkNoteDescription(noteTitleEdited, noteDescEdited));
+    }
+
 
     @Test
     public void createCredentialAndVerifyDisplayed() throws InterruptedException {
