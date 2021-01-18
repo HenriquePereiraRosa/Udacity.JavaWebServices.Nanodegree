@@ -25,9 +25,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/h2/**", "/signup", "/css/**", "/js/**")
                 .permitAll().anyRequest().authenticated();
+
         http.formLogin()
                 .loginPage("/login")
-                .permitAll();
+                .permitAll()
+                .and()
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login");
+
         http.formLogin()
                 .defaultSuccessUrl("/home", true);
         http.csrf().disable(); // To see H2 tables

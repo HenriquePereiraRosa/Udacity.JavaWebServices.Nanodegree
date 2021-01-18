@@ -39,13 +39,13 @@ public class LoginPage {
     }
 
     public String getErrorMsg() {
-        return this.errorMsg.getText();
+        return this.errorMsg.getAttribute("innerHTML");
     }
     public WebElement getErrorElement() {
         return this.errorMsg;
     }
 
     public String getLogoutMsg() {
-        return this.logoutMsg.getText();
+        return this.logoutMsg.getAttribute("innerHTML");
     }
 }

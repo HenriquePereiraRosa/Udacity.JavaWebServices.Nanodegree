@@ -11,7 +11,7 @@
 <body class="p-3 mb-2 bg-light text-black">
 <div class="container">
     <div id="logoutDiv">
-        <form action="home/logout" method="GET">
+        <form action="/logout" method="GET">
             <button type="submit" class="btn btn-secondary float-right">Logout</button>
         </form>
     </div>
@@ -104,7 +104,7 @@
                                 <a class="btn btn-success" id="btn-edit-note"
                                    th:onclick="showNoteModal([[${note.id}]],
                                     [[${note.noteTitle}]], [[${note.noteDescription}]])">Edit</a>
-                                <a th:href="@{|/home/delete-note/?title=${note.noteTitle}|}"
+                                <a th:href="@{|/home/delete-note/${note.id}|}"
                                    id="btn-delete-note" class="btn btn-danger">Delete</a>
                             </td>
                             <th scope="row" th:text="${note.noteTitle}"></th>
@@ -179,7 +179,7 @@
                                    th:onclick="showCredentialModal([[${credential.id}]],
                                     [[${credential.url}]], [[${credential.username}]],
                                      [[${credential.password}]])">Edit</a>
-                                <a th:href="@{|/home/delete-credential/?url=${credential.url}|}"
+                                <a th:href="@{|/home/delete-credential/${credential.id}|}"
                                    id="btn-delete-credential"
                                    class="btn btn-danger">Delete</a>
                             </td>
@@ -203,20 +203,21 @@
                             </div>
                             <div class="modal-body">
                                 <form action="#" th:action="@{|/home/credential|}" method="POST">
-                                    <input type="hidden" name="credentialId" id="credential-id">
+<!--                                    <input type="hidden" name="credentialId" id="credential-id">-->
+                                    <input type="hidden" name="id" id="credential-id">
                                     <div class="form-group">
                                         <label for="credential-url" class="col-form-label">URL</label>
-                                        <input type="text" name="credential-url" class="form-control"
+                                        <input type="text" name="url" class="form-control"
                                                id="credential-url" maxlength="100" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="credential-username" class="col-form-label">Username</label>
-                                        <input type="text" name="credential-username" class="form-control"
+                                        <input type="text" name="username" class="form-control"
                                                id="credential-username" maxlength="30" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="credential-password" class="col-form-label">Password</label>
-                                        <input type="text" name="credential-password" class="form-control"
+                                        <input type="text" name="password" class="form-control"
                                                id="credential-password" maxlength="30" required>
                                     </div>
                                     <button id="credentialSubmit" type="submit" class="d-none"></button>

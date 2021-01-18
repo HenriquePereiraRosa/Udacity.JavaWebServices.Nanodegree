@@ -170,6 +170,7 @@ public class HomeController {
                            HttpServletRequest req,
                            HttpServletResponse res) {
         System.out.println("Post Mapping saveNote(..): " + reqNote.getNoteTitle()); // todo debug
+        model.addAttribute("nav-notes","active");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = (String) auth.getPrincipal();
         User user = userService.getUserByUsername(username);
@@ -184,7 +185,9 @@ public class HomeController {
             return "home";
         }
 
-        if (!reqNote.getNoteTitle().isEmpty()
+        if (reqNote.getNoteTitle() == null
+                || reqNote.getNoteTitle().isEmpty()
+                || reqNote.getNoteDescription() == null
                 || reqNote.getNoteDescription().isEmpty()) {
             model.addAttribute("errorNote", "Note fields can't be void!");
         }
@@ -212,9 +215,10 @@ public class HomeController {
         return "home";
     }
 
-    @GetMapping("/delete-note/{title}")
-    public String deleteNote(@PathVariable String title, Model model) throws IOException {
-        Integer id = noteService.deleteByTitle(title);
+    @GetMapping("/delete-note/{id}")
+    public String deleteNote(@PathVariable Integer id, Model model) throws IOException {
+        model.addAttribute("nav-notes","active");
+        Integer idDel = noteService.deleteById(id);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = (String) auth.getPrincipal();
         User user = userService.getUserByUsername(username);
@@ -229,6 +233,7 @@ public class HomeController {
                            HttpServletRequest req,
                            HttpServletResponse res) {
         System.out.println("Post Mapping saveCredential(..): " + reqCredential.getUrl()); // todo debug
+        model.addAttribute("nav-credentials","active");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = (String) auth.getPrincipal();
         User user = userService.getUserByUsername(username);
@@ -243,9 +248,12 @@ public class HomeController {
             return "home";
         }
 
-        if (!reqCredential.getUrl().isEmpty()
+        if (reqCredential.getUrl().isEmpty()
+                || reqCredential.getUrl() == null
                 || reqCredential.getUsername().isEmpty()
-                || reqCredential.getPassword().isEmpty()) {
+                || reqCredential.getUsername() == null
+                || reqCredential.getPassword().isEmpty()
+                || reqCredential.getPassword() == null) {
             model.addAttribute("errorCredential", "Credential fields can't be void!");
         }
         Credential credentialDb = credentialService.getByUrl(reqCredential.getUrl());
@@ -275,9 +283,10 @@ public class HomeController {
         return "home";
     }
 
-    @GetMapping("/delete-credential/{url}")
-    public String deleteCredential(@PathVariable String url, Model model) throws IOException {
-        Integer id = credentialService.deleteByUrl(url);
+    @GetMapping("/delete-credential/{id}")
+    public String deleteCredential(@PathVariable Integer id, Model model) throws IOException {
+        model.addAttribute("nav-credentials","active");
+        Integer idDel = credentialService.deleteById(id);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = (String) auth.getPrincipal();
         User user = userService.getUserByUsername(username);

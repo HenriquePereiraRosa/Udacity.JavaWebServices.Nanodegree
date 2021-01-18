@@ -48,4 +48,7 @@ public class CredentialService {
     public Integer updateOne(Credential credential) {
         return credentialMapper.updateOne(credential);
     }
+
+    public Integer deleteById(Integer id) { return credentialMapper.deteleById(id);
+    }
 }

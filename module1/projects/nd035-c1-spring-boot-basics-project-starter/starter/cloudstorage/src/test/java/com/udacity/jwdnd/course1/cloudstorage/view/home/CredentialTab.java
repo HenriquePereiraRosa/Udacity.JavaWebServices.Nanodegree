@@ -1,5 +1,7 @@
 package com.udacity.jwdnd.course1.cloudstorage.view.home;
 
+import com.udacity.jwdnd.course1.cloudstorage.model.entity.Credential;
+import com.udacity.jwdnd.course1.cloudstorage.model.entity.Note;
 import com.udacity.jwdnd.course1.cloudstorage.service.CredentialService;
 import com.udacity.jwdnd.course1.cloudstorage.service.NoteService;
 import org.openqa.selenium.JavascriptExecutor;
@@ -53,6 +55,7 @@ public class CredentialTab {
     public void addCredential(String url,
                               String username,
                               String password) {
+        js.executeScript("arguments[0].click();", tabCredentials);
         js.executeScript("arguments[0].click();", btnAddCredential);
         js.executeScript("arguments[0].value='" + url + "';", credentialUrl);
         js.executeScript("arguments[0].value='" + username + "';", credentialUsername);
@@ -63,10 +66,18 @@ public class CredentialTab {
     public Boolean checkIfCredentialExists(String url) {
         js.executeScript("arguments[0].click();", tabCredentials);
         for (WebElement cred : credentials) {
-            String noteTitle = cred.getText();
+            String noteTitle = cred.getAttribute("innerHTML");
             if (noteTitle.contains(url))
                 return true;
         }
+        return false;
+    }
+
+    public Boolean checkCredentialContent(String url, String username, String password) {
+        Credential credential = credentialService.getByUrl(url);
+        if (credential.getUsername().equals(username) ||
+                credential.getPassword().equals(password))
+            return true;
         return false;
     }
 }

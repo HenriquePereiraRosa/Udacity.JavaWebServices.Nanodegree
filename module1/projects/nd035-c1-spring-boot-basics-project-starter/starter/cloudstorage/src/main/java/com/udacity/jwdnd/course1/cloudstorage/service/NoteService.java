@@ -29,6 +29,10 @@ public class NoteService {
         return mapper.updateOne(note);
     }
 
+    public Integer deleteById(Integer id) {
+        return mapper.deleteById(id);
+    }
+
     public Integer deleteByTitle(String noteTitle) {
         return mapper.deleteByTitle(noteTitle);
     }

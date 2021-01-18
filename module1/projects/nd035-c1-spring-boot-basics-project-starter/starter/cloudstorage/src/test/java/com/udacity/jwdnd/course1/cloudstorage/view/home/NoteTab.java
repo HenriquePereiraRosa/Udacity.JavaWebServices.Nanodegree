@@ -1,7 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.view.home;
 
 import com.udacity.jwdnd.course1.cloudstorage.model.entity.Note;
-import com.udacity.jwdnd.course1.cloudstorage.service.CredentialService;
 import com.udacity.jwdnd.course1.cloudstorage.service.NoteService;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -10,7 +9,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -54,10 +52,52 @@ public class NoteTab {
     }
 
     public void addNote(String title, String description) {
+        js.executeScript("arguments[0].click();", tabNotes);
         js.executeScript("arguments[0].click();", btnAddNote);
         js.executeScript("arguments[0].value='" + title + "';", noteTitle);
         js.executeScript("arguments[0].value='" + description + "';", noteDescription);
         js.executeScript("arguments[0].click();", noteSubmit);
+    }
+
+    public void editNote(String title, String newTitle, String newDescription) {
+        WebDriverWait wait = new WebDriverWait(driver, 2);
+        WebElement btnDeleteNote;
+
+        js.executeScript("arguments[0].click();", tabNotes);
+        WebElement homeWait = wait.until(webDriver ->
+                webDriver.findElement(By.id("btn-delete-note")));
+        for (WebElement note : notes) {
+            String noteRowHTML = note.getAttribute("innerHTML");
+            System.out.println(noteRowHTML);
+            if (noteRowHTML.contains(title)) {
+                WebElement btnEditItem =
+                        note.findElement(By.id("btn-edit-credential"));
+                js.executeScript("arguments[0].click();", btnEditItem);
+                js.executeScript("arguments[0].click();", tabNotes);
+                js.executeScript("arguments[0].value='" + newTitle + "';", noteRowHTML);
+                js.executeScript("arguments[0].value='" + newDescription + "';", noteDescription);
+                js.executeScript("arguments[0].click();", noteSubmit);
+            }
+        }
+    }
+
+    public void deleteNote(String title, String description) {
+        WebDriverWait wait = new WebDriverWait(driver, 2);
+        WebElement btnDeleteNote;
+
+        js.executeScript("arguments[0].click();", tabNotes);
+        WebElement homeWait = wait.until(webDriver ->
+                webDriver.findElement(By.id("btn-delete-note")));
+        for (WebElement note : notes) {
+            String noteTitle = note.getAttribute("innerHTML");
+            System.out.println(noteTitle);
+            if (noteTitle.contains(title)) {
+                WebElement btnDelItem =
+                        note.findElement(By.id("btn-delete-note"));
+                js.executeScript("arguments[0].click();", btnDelItem);
+                return;
+            }
+        }
     }
 
     public Integer getTableRowsNumber(String title) {
@@ -80,7 +120,9 @@ public class NoteTab {
 
     public Boolean checkNoteDescription(String title, String description) {
         Note note = noteService.getByTitle(title);
-        if (note.getNoteDescription().equals(description))
+        if (note != null
+                && note.getNoteDescription() != null
+                && note.getNoteDescription().equals(description))
             return true;
         return false;
     }

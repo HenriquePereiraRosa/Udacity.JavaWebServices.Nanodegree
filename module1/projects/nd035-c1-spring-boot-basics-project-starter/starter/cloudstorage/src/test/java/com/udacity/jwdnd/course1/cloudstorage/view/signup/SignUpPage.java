@@ -30,6 +30,9 @@ public class SignUpPage {
     @FindBy(xpath = "//button[@type='submit']")
     private WebElement signupButton;
 
+    @FindBy(id = "goback-link")
+    private WebElement backToLoginLink;
+
     public SignUpPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
         this.js = (JavascriptExecutor) driver;
@@ -46,11 +49,16 @@ public class SignUpPage {
         js.executeScript("arguments[0].click();", signupButton);
     }
 
-    public String getSuccessMessage() {
-        return this.successMsg.getText();
+    public Boolean checkSuccessMessage(String success) {
+        String tag = this.successMsg.getAttribute("innerHTML");
+        return tag.contains(success);
     }
 
     public String getErrorSuccessMessage() {
-        return this.errorMsg.getText();
+        return this.errorMsg.getAttribute("innerHTML");
+    }
+
+    public void goBackToLogin() {
+        js.executeScript("arguments[0].click();", backToLoginLink);
     }
 }

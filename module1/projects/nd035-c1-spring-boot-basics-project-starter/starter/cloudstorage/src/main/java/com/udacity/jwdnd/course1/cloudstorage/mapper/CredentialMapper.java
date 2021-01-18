@@ -35,4 +35,7 @@ public interface CredentialMapper {
     Integer deleteByUrl(String url);
 
 
+    @Delete("delete from CREDENTIALS where id = #{id}")
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    Integer deteleById(Integer id);
 }
