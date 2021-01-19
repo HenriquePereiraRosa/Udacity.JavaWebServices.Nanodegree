@@ -5,6 +5,7 @@ import com.udacity.jwdnd.course1.cloudstorage.service.NoteService;
 import com.udacity.jwdnd.course1.cloudstorage.view.home.CredentialTab;
 import com.udacity.jwdnd.course1.cloudstorage.view.home.HomePage;
 import com.udacity.jwdnd.course1.cloudstorage.view.home.NoteTab;
+import com.udacity.jwdnd.course1.cloudstorage.view.home.ResultPage;
 import com.udacity.jwdnd.course1.cloudstorage.view.login.LoginPage;
 import com.udacity.jwdnd.course1.cloudstorage.view.signup.SignUpPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -177,6 +178,10 @@ class CloudStorageApplicationTests {
         Assertions.assertEquals("Home", driver.getTitle());
 
         noteTab.addNote(noteTitle, noteDescription);
+        ResultPage resultPage = new ResultPage(driver);
+        Assertions.assertTrue(resultPage.checkSuccessMessage());
+        resultPage.clickContinue();
+
         Assertions.assertTrue(noteTab.checkIfNoteExists(noteTitle));
         Assertions.assertTrue(noteTab
                 .checkNoteDescription(noteTitle, noteDescription));
@@ -196,14 +201,19 @@ class CloudStorageApplicationTests {
         NoteTab noteTab = new NoteTab(driver, noteService);
         Assertions.assertEquals("Home", driver.getTitle());
 
+        ResultPage resultPage = new ResultPage(driver);
         for (int i = 1; i < 3; i++) {
             noteTab.addNote(noteTitle + i, noteDescription + i);
+            Assertions.assertTrue(resultPage.checkSuccessMessage());
+            resultPage.clickContinue();
         }
         Assertions.assertTrue(noteTab.checkIfNoteExists(noteTitle + 1));
         Assertions.assertTrue(noteTab
                 .checkNoteDescription(noteTitle + 1, noteDescription + 1));
 
-        noteTab.deleteNote(noteTitle + 1, noteDescription + 1);
+        noteTab.deleteNote(noteTitle + 1);
+        Assertions.assertTrue(resultPage.checkSuccessMessage());
+        resultPage.clickContinue();
         Assertions.assertTrue(!noteTab.checkIfNoteExists(noteTitle + 1));
         Assertions.assertTrue(!noteTab
                 .checkNoteDescription(noteTitle + 1, noteDescription + 1));
@@ -223,8 +233,11 @@ class CloudStorageApplicationTests {
         NoteTab noteTab = new NoteTab(driver, noteService);
         Assertions.assertEquals("Home", driver.getTitle());
 
+        ResultPage resultPage = new ResultPage(driver);
         for (int i = 1; i < 4; i++) {
             noteTab.addNote(noteTitle + i, noteDescription + i);
+            Assertions.assertTrue(resultPage.checkSuccessMessage());
+            resultPage.clickContinue();
         }
         Assertions.assertTrue(noteTab.checkIfNoteExists(noteTitle + 1));
         Assertions.assertTrue(noteTab
@@ -233,30 +246,121 @@ class CloudStorageApplicationTests {
         String noteTitleEdited = noteTitle + " Edited";
         String noteDescEdited = noteDescription + " Edited";
         noteTab.editNote(noteTitle + 1, noteTitleEdited,  noteDescEdited);
+        Assertions.assertTrue(resultPage.checkSuccessMessage());
+        resultPage.clickContinue();
         Assertions.assertTrue(noteTab.checkIfNoteExists(noteTitleEdited));
         Assertions.assertTrue(noteTab
                 .checkNoteDescription(noteTitleEdited, noteDescEdited));
     }
 
 
+
     @Test
     public void createCredentialAndVerifyDisplayed() throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(driver, 2);
+        String credUrl = "google.com";
+        String credUsername = "username";
+        String credPassword = "pass123";
 
         driver.get(baseURL);
         LoginPage loginPage = new LoginPage(driver);
         loginPage.login(this.email, this.credPassword);
 
-        WebElement homeWait = wait.until(webDriver ->
+        wait.until(webDriver ->
                 webDriver.findElement(By.tagName("title")));
 
         CredentialTab credentialTab = new CredentialTab(driver, credentialService);
         Assertions.assertEquals("Home", driver.getTitle());
 
         credentialTab.addCredential(credUrl, credUsername, credPassword);
+        ResultPage resultPage = new ResultPage(driver);
+        Assertions.assertTrue(resultPage.checkSuccessMessage());
+        resultPage.clickContinue();
+
         Assertions.assertTrue(credentialTab.checkIfCredentialExists(credUrl));
         Assertions.assertTrue(credentialTab
                 .checkCredentialContent(credUrl, credUsername, credPassword));
     }
+
+    @Test
+    public void createCredentialAndDeleteIt() throws InterruptedException {
+        WebDriverWait wait = new WebDriverWait(driver, 2);
+        String credUrl = "google.com";
+        String credUsername = "username";
+        String credPassword = "pass123";
+
+        driver.get(baseURL);
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.login(this.email, this.credPassword);
+
+        wait.until(webDriver ->
+                webDriver.findElement(By.tagName("title")));
+
+        CredentialTab credentialTab = new CredentialTab(driver, credentialService);
+        Assertions.assertEquals("Home", driver.getTitle());
+
+        ResultPage resultPage = new ResultPage(driver);
+        for (int i = 1; i < 3; i++) {
+            credentialTab.addCredential(credUrl + i,
+                    credUsername + i, credPassword + 1);
+            Assertions.assertTrue(resultPage.checkSuccessMessage());
+            resultPage.clickContinue();
+        }
+        Assertions.assertTrue(credentialTab.checkIfCredentialExists(credUrl + 1));
+        Assertions.assertTrue(credentialTab
+                .checkCredentialContent(credUrl + 1,
+                        credUsername + 1, credPassword + 1));
+
+        credentialTab.deleteCredential(credUrl + 1);
+        Assertions.assertTrue(resultPage.checkSuccessMessage());
+        resultPage.clickContinue();
+        Assertions.assertTrue(!credentialTab.checkIfCredentialExists(credUrl + 1));
+        Assertions.assertTrue(!credentialTab
+                .checkCredentialContent(credUrl + 1,
+                        credUsername + 1, credPassword + 1));
+    }
+
+    @Test
+    public void createCredentialAndEditIt() throws InterruptedException {
+        WebDriverWait wait = new WebDriverWait(driver, 2);
+        String credUrl = "google.com";
+        String credUsername = "username";
+        String credPassword = "pass123";
+
+        driver.get(baseURL);
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.login(this.email, this.credPassword);
+
+        wait.until(webDriver ->
+                webDriver.findElement(By.tagName("title")));
+
+        CredentialTab credentialTab = new CredentialTab(driver, credentialService);
+        Assertions.assertEquals("Home", driver.getTitle());
+
+        ResultPage resultPage = new ResultPage(driver);
+        for (int i = 1; i < 3; i++) {
+            credentialTab.addCredential(credUrl + i,
+                    credUsername + i, credPassword + 1);
+            Assertions.assertTrue(resultPage.checkSuccessMessage());
+            resultPage.clickContinue();
+        }
+        Assertions.assertTrue(credentialTab.checkIfCredentialExists(credUrl + 1));
+        Assertions.assertTrue(credentialTab
+                .checkCredentialContent(credUrl + 1,
+                        credUsername + 1, credPassword + 1));
+
+        String credUrlEdited = credUrl + " Edited";
+        String credUsernameEdited = credUsername + " Edited";
+        String credPassEdited = credPassword + " Edited";
+        credentialTab.editCredential(credUrl + 1, credUrlEdited,
+                credUsernameEdited, credPassEdited);
+        Assertions.assertTrue(resultPage.checkSuccessMessage());
+        resultPage.clickContinue();
+        Assertions.assertTrue(credentialTab.checkIfCredentialExists(credUrlEdited));
+        Assertions.assertTrue(credentialTab
+                .checkCredentialContent(credUrlEdited,
+                        credUsernameEdited, credPassEdited));
+    }
+
 
 }

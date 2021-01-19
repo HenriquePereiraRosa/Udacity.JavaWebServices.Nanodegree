@@ -82,7 +82,7 @@ public class NoteTab {
         }
     }
 
-    public void deleteNote(String title, String description) {
+    public void deleteNote(String title) {
         WebDriverWait wait = new WebDriverWait(driver, 2);
         WebElement btnDeleteNote;
 
