@@ -1,6 +1,8 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
 import com.udacity.jwdnd.course1.cloudstorage.service.CredentialService;
+import com.udacity.jwdnd.course1.cloudstorage.service.EncryptionService;
+import com.udacity.jwdnd.course1.cloudstorage.service.HashService;
 import com.udacity.jwdnd.course1.cloudstorage.service.NoteService;
 import com.udacity.jwdnd.course1.cloudstorage.view.home.CredentialTab;
 import com.udacity.jwdnd.course1.cloudstorage.view.home.HomePage;
@@ -38,6 +40,8 @@ class CloudStorageApplicationTests {
     NoteService noteService;
     @Autowired
     CredentialService credentialService;
+    @Autowired
+    EncryptionService encryptionService;
 
     @LocalServerPort // (Spring) allow injection od server`s Port
     private Integer port;
@@ -245,14 +249,13 @@ class CloudStorageApplicationTests {
 
         String noteTitleEdited = noteTitle + " Edited";
         String noteDescEdited = noteDescription + " Edited";
-        noteTab.editNote(noteTitle + 1, noteTitleEdited,  noteDescEdited);
+        noteTab.editNote(noteTitle + 1, noteTitleEdited, noteDescEdited);
         Assertions.assertTrue(resultPage.checkSuccessMessage());
         resultPage.clickContinue();
         Assertions.assertTrue(noteTab.checkIfNoteExists(noteTitleEdited));
         Assertions.assertTrue(noteTab
                 .checkNoteDescription(noteTitleEdited, noteDescEdited));
     }
-
 
 
     @Test
@@ -269,7 +272,8 @@ class CloudStorageApplicationTests {
         wait.until(webDriver ->
                 webDriver.findElement(By.tagName("title")));
 
-        CredentialTab credentialTab = new CredentialTab(driver, credentialService);
+        CredentialTab credentialTab = new CredentialTab(driver,
+                credentialService, encryptionService);
         Assertions.assertEquals("Home", driver.getTitle());
 
         credentialTab.addCredential(credUrl, credUsername, credPassword);
@@ -296,7 +300,8 @@ class CloudStorageApplicationTests {
         wait.until(webDriver ->
                 webDriver.findElement(By.tagName("title")));
 
-        CredentialTab credentialTab = new CredentialTab(driver, credentialService);
+        CredentialTab credentialTab = new CredentialTab(driver,
+                credentialService, encryptionService);
         Assertions.assertEquals("Home", driver.getTitle());
 
         ResultPage resultPage = new ResultPage(driver);
@@ -308,8 +313,8 @@ class CloudStorageApplicationTests {
         }
         Assertions.assertTrue(credentialTab.checkIfCredentialExists(credUrl + 1));
         Assertions.assertTrue(credentialTab
-                .checkCredentialContent(credUrl + 1,
-                        credUsername + 1, credPassword + 1));
+                .checkCredentialContent(credUrl + 1, credUsername + 1,
+                        credPassword + 1));
 
         credentialTab.deleteCredential(credUrl + 1);
         Assertions.assertTrue(resultPage.checkSuccessMessage());
@@ -334,7 +339,8 @@ class CloudStorageApplicationTests {
         wait.until(webDriver ->
                 webDriver.findElement(By.tagName("title")));
 
-        CredentialTab credentialTab = new CredentialTab(driver, credentialService);
+        CredentialTab credentialTab = new CredentialTab(driver,
+                credentialService, encryptionService);
         Assertions.assertEquals("Home", driver.getTitle());
 
         ResultPage resultPage = new ResultPage(driver);

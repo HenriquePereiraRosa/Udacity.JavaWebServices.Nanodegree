@@ -3,6 +3,7 @@ package com.udacity.jwdnd.course1.cloudstorage.view.home;
 import com.udacity.jwdnd.course1.cloudstorage.model.entity.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.model.entity.Note;
 import com.udacity.jwdnd.course1.cloudstorage.service.CredentialService;
+import com.udacity.jwdnd.course1.cloudstorage.service.EncryptionService;
 import com.udacity.jwdnd.course1.cloudstorage.service.NoteService;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -19,6 +20,7 @@ public class CredentialTab {
     private final JavascriptExecutor js;
     private final WebDriver driver;
     private CredentialService credentialService;
+    private EncryptionService encryptionService;
 
     @FindBy(id = "nav-credentials-tab")
     private WebElement tabCredentials;
@@ -47,11 +49,12 @@ public class CredentialTab {
     @FindBy(id = "credentials")
     private List<WebElement> credentials;
 
-    public CredentialTab(WebDriver driver, CredentialService credentialService) {
+    public CredentialTab(WebDriver driver, CredentialService credentialService, EncryptionService encryptionService) {
         PageFactory.initElements(driver, this);
         this.driver = driver;
         this.js = (JavascriptExecutor) driver;
         this.credentialService = credentialService;
+        this.encryptionService = encryptionService;
     }
 
     public void addCredential(String url,
@@ -77,8 +80,11 @@ public class CredentialTab {
 
     public Boolean checkCredentialContent(String url, String username, String password) {
         Credential credential = credentialService.getByUrl(url);
-        if (credential.getUsername().equals(username) ||
-                credential.getPassword().equals(password))
+        if (credential != null && credential.getUsername() != null
+                && credential.getUsername().equals(username)
+                && credential.getPassword() != null
+                && credential.getPassword().equals(encryptionService
+                    .encryptValue(password, credential.getKey())))
             return true;
         return false;
     }
