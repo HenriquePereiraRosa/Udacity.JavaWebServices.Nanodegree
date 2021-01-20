@@ -28,26 +28,24 @@ public class SignupController {
     @PostMapping
     public String signupUser(@ModelAttribute User user, Model model,
                              RedirectAttributes redirectAttributes) {
-        String signupError = null;
+        String error = null;
 
         if (!userService.isUsernameAvailable(user.getUsername())) {
-            signupError = "The username already exists.";
+            error = "The username already exists.";
         }
 
-        if (signupError == null) {
+        if (error == null) {
             int rowsAdded = userService.createUser(user);
             if (rowsAdded < 0) {
-                signupError = "There was an error signing you up. Please try again.";
+                error = "There was an error signing you up. Please try again.";
             }
         }
 
-        if (signupError != null) {
-            model.addAttribute("signupError", signupError);
+        if (error != null) {
+            model.addAttribute("error", error);
             return "signup";
         }
 
-        model.addAttribute("signupSuccess", true);
-        redirectAttributes.addFlashAttribute("signupSuccess", "You successfully signed up!"); // not working
-        return "redirect:/login?message=You successfully signed up!"; // not working too
+        return "redirect:/login?signup=true";
     }
 }
