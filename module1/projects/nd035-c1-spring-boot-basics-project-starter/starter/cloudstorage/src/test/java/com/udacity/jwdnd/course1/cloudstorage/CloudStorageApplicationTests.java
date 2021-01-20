@@ -2,7 +2,6 @@ package com.udacity.jwdnd.course1.cloudstorage;
 
 import com.udacity.jwdnd.course1.cloudstorage.service.CredentialService;
 import com.udacity.jwdnd.course1.cloudstorage.service.EncryptionService;
-import com.udacity.jwdnd.course1.cloudstorage.service.HashService;
 import com.udacity.jwdnd.course1.cloudstorage.service.NoteService;
 import com.udacity.jwdnd.course1.cloudstorage.view.home.CredentialTab;
 import com.udacity.jwdnd.course1.cloudstorage.view.home.HomePage;
@@ -15,7 +14,6 @@ import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -52,7 +50,7 @@ class CloudStorageApplicationTests {
     public static void loadDriver() {
         WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
-//        options.addArguments("--start-maximized");
+        options.addArguments("--start-minimized");
         driver = new ChromeDriver(options);
         driver.manage().window()
                 .setPosition(new Point(-1100, 0));
