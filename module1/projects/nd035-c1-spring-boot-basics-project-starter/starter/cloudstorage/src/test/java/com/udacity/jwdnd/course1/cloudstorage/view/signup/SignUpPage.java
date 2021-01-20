@@ -9,9 +9,6 @@ import org.openqa.selenium.support.PageFactory;
 public class SignUpPage {
     private final JavascriptExecutor js;
 
-    @FindBy(id = "signup-success-msg")
-    private WebElement successMsg;
-
     @FindBy(id = "signup-error-msg")
     private WebElement errorMsg;
 
@@ -47,11 +44,6 @@ public class SignUpPage {
         js.executeScript("arguments[0].value='" + username + "';", inputEmail);
         js.executeScript("arguments[0].value='" + password + "';", inputPassword);
         js.executeScript("arguments[0].click();", signupButton);
-    }
-
-    public Boolean checkSuccessMessage(String success) {
-        String tag = this.successMsg.getAttribute("innerHTML");
-        return tag.contains(success);
     }
 
     public String getErrorSuccessMessage() {

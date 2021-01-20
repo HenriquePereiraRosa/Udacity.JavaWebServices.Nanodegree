@@ -81,9 +81,6 @@ class CloudStorageApplicationTests {
             SignUpPage signUpPage = new SignUpPage(driver);
             signUpPage.signup(firstname, lastname, email, credPassword);
 
-            Assertions.assertTrue(signUpPage
-                    .checkSuccessMessage("You successfully signed up!"));
-            signUpPage.goBackToLogin();
         } else {
             HomePage homePage = new HomePage(driver);
             if (driver.getTitle().equals("Home"))
