@@ -1,13 +1,15 @@
 package com.udacity.vehicles;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.boot.web.server.LocalServerPort;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class VehiclesApiApplicationTests {
+
+    @LocalServerPort // (Spring) allow injection of server`s Port
+    private Integer port;
 
     @Test
     public void contextLoads() {
