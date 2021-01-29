@@ -10,7 +10,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+
+import java.math.BigDecimal;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -34,14 +38,19 @@ public class PricingServiceApplicationTests {
         Long vehicleId = 1L;
         try {
             RestTemplate rest = new RestTemplate();
-            price = rest.exchange("http://localhost:" + port +
+            ResponseEntity<Price> entity = rest.exchange("http://localhost:" + port +
                             "/services/price?vehicleId=" + vehicleId,
                     HttpMethod.GET,
                     null,
-                    Price.class).getBody();
+                    Price.class);
 
-            Assertions.assertTrue(price.getCurrency().equals("USD"));
-            Assertions.assertTrue(price.getVehicleId().equals(vehicleId));
+            price = entity.getBody();
+
+            Assertions.assertEquals(HttpStatus.OK, entity.getStatusCode());
+            Assertions.assertNotNull(price);
+            Assertions.assertEquals("USD", price.getCurrency());
+            Assertions.assertEquals(BigDecimal.class, price.getPrice().getClass());
+            Assertions.assertEquals(vehicleId, price.getVehicleId());
 
         } catch (Exception e) {
             log.error("Unexpected error retrieving price for vehicle {}", vehicleId, e);
