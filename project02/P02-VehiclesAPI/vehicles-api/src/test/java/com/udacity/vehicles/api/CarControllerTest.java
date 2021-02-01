@@ -133,30 +133,6 @@ public class CarControllerTest {
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
 
-            MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-            body.add("", "{\n" +
-                    "   \"condition\":\"USED\",\n" +
-                    "   \"details\":{\n" +
-                    "      \"body\":\"sedan\",\n" +
-                    "      \"model\":\"Impala\",\n" +
-                    "      \"manufacturer\":{\n" +
-                    "         \"code\":101,\n" +
-                    "         \"name\":\"Chevrolet\"\n" +
-                    "      },\n" +
-                    "      \"numberOfDoors\":4,\n" +
-                    "      \"fuelType\":\"Gasoline\",\n" +
-                    "      \"engine\":\"3.6L V6\",\n" +
-                    "      \"mileage\":32280,\n" +
-                    "      \"modelYear\":2018,\n" +
-                    "      \"productionYear\":2018,\n" +
-                    "      \"externalColor\":\"white\"\n" +
-                    "   },\n" +
-                    "   \"location\":{\n" +
-                    "      \"lat\":40.73061,\n" +
-                    "      \"lon\":-73.935242\n" +
-                    "   }\n" +
-                    "}");
-
             HttpEntity<?> requestEntity = new HttpEntity<Object>(item, headers);
 
             ResponseEntity<Car> entity = rest.exchange(url,
