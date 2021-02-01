@@ -97,10 +97,6 @@ public class CarService {
                         return repository.save(carToBeUpdated);
                     }).orElseThrow(CarNotFoundException::new);
         }
-
-//        Price price = pricingService.getPriceByVehicleId(car.getId());
-//        car.setPrice(price);
-//        car.getLocation().setAddress(generateAddress(car));
         return repository.save(car);
     }
 

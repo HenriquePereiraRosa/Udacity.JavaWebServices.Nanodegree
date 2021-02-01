@@ -3,6 +3,7 @@ package com.udacity.vehicles.api;
 
 import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.service.CarService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping("/cars")
 class CarController {
 
-    private final CarService carService;
+//    private final CarService carService;
+    @Autowired
+    CarService carService;
     private final CarResourceAssembler assembler;
 
     CarController(CarService carService, CarResourceAssembler assembler) {

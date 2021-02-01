@@ -31,9 +31,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -114,7 +112,15 @@ public class CarControllerTest {
 
         Car car01 = this.getCar();
         Car car02 = this.getCar();
+        car02.getDetails().setBody("Hatch");
+        car02.getDetails().setManufacturer(new Manufacturer(104, "Dodge"));
+        car02.getDetails().setModel("Viper");
+        car02.setLocation(new Location(60.73061, -53.935242));
         Car car03 = this.getCar();
+        car03.getDetails().setBody("Hatch");
+        car03.getDetails().setManufacturer(new Manufacturer(100, "Audi"));
+        car03.getDetails().setModel("A4");
+        car03.setLocation(new Location(50.73061, -63.935242));
 
         List<Car> cars = new ArrayList<>();
         cars.add(car01);
@@ -160,18 +166,23 @@ public class CarControllerTest {
             cars.set(cars.indexOf(item), entity.getBody());
         }
 
-        ParameterizedTypeReference ref = new ParameterizedTypeReference<List<Car>>(){};
+        ParameterizedTypeReference ref = new ParameterizedTypeReference<List<Car>>() {
+        };
 
-            RestTemplate rest = new RestTemplate();
-        ResponseEntity<List<Car>> responseEntity =
+        RestTemplate rest = new RestTemplate();
+
+        ResponseEntity<Map> res =
                 rest.exchange(url,
                         HttpMethod.GET,
                         null,
-                        new ParameterizedTypeReference<List<Car>>() { });
-            List<Car> resCars = responseEntity.getBody();
+                        Map.class);
+        Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
+        Map carsMap = (Map) res.getBody().get("_embedded");
+        List<Car> resCars = (List) carsMap.get("carList");
+
+        Assertions.assertEquals(cars.size(), resCars.size());
 
         for (Car item : resCars) {
-            Assertions.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
             Assertions.assertEquals("USD", item.getPrice().getCurrency());
             Assertions.assertEquals(BigDecimal.class, item.getPrice().getClass());
             Assertions.assertEquals(item.getId(), item.getId());
