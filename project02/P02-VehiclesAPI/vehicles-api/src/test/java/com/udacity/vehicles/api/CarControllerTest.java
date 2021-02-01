@@ -1,5 +1,7 @@
 package com.udacity.vehicles.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.udacity.vehicles.client.maps.MapsClient;
 import com.udacity.vehicles.client.prices.PriceClient;
 import com.udacity.vehicles.domain.Condition;
@@ -8,20 +10,30 @@ import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.domain.car.Details;
 import com.udacity.vehicles.domain.manufacturer.Manufacturer;
 import com.udacity.vehicles.service.CarService;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.*;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -35,6 +47,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
 public class CarControllerTest {
+
+    private static final Logger log = LoggerFactory.getLogger(CarControllerTest.class);
+
+    @LocalServerPort // (Spring) allow injection of server`s Port
+    private Integer port;
 
     @Autowired
     private MockMvc mvc;
@@ -65,6 +82,7 @@ public class CarControllerTest {
 
     /**
      * Tests for successful creation of new car in the system
+     *
      * @throws Exception when car creation fails in the system
      */
     @Test
@@ -80,6 +98,7 @@ public class CarControllerTest {
 
     /**
      * Tests if the read operation appropriately returns a list of vehicles.
+     *
      * @throws Exception if the read operation of the vehicle list fails
      */
     @Test
@@ -89,11 +108,80 @@ public class CarControllerTest {
          *   the whole list of vehicles. This should utilize the car from `getCar()`
          *   below (the vehicle will be the first in the list).
          */
+        String url = new StringBuilder("http://localhost:"
+                + port + "/cars")
+                .toString();
+
+        Car car01 = this.getCar();
+        Car car02 = this.getCar();
+        Car car03 = this.getCar();
+
+        List<Car> cars = new ArrayList<>();
+        cars.add(car01);
+        cars.add(car02);
+        cars.add(car03);
+
+        for (Car item : cars) {
+
+            RestTemplate rest = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+
+            MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+            body.add("", "{\n" +
+                    "   \"condition\":\"USED\",\n" +
+                    "   \"details\":{\n" +
+                    "      \"body\":\"sedan\",\n" +
+                    "      \"model\":\"Impala\",\n" +
+                    "      \"manufacturer\":{\n" +
+                    "         \"code\":101,\n" +
+                    "         \"name\":\"Chevrolet\"\n" +
+                    "      },\n" +
+                    "      \"numberOfDoors\":4,\n" +
+                    "      \"fuelType\":\"Gasoline\",\n" +
+                    "      \"engine\":\"3.6L V6\",\n" +
+                    "      \"mileage\":32280,\n" +
+                    "      \"modelYear\":2018,\n" +
+                    "      \"productionYear\":2018,\n" +
+                    "      \"externalColor\":\"white\"\n" +
+                    "   },\n" +
+                    "   \"location\":{\n" +
+                    "      \"lat\":40.73061,\n" +
+                    "      \"lon\":-73.935242\n" +
+                    "   }\n" +
+                    "}");
+
+            HttpEntity<?> requestEntity = new HttpEntity<Object>(item, headers);
+
+            ResponseEntity<Car> entity = rest.exchange(url,
+                    HttpMethod.POST,
+                    requestEntity,
+                    Car.class);
+            cars.set(cars.indexOf(item), entity.getBody());
+        }
+
+        ParameterizedTypeReference ref = new ParameterizedTypeReference<List<Car>>(){};
+
+            RestTemplate rest = new RestTemplate();
+        ResponseEntity<List<Car>> responseEntity =
+                rest.exchange(url,
+                        HttpMethod.GET,
+                        null,
+                        new ParameterizedTypeReference<List<Car>>() { });
+            List<Car> resCars = responseEntity.getBody();
+
+        for (Car item : resCars) {
+            Assertions.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            Assertions.assertEquals("USD", item.getPrice().getCurrency());
+            Assertions.assertEquals(BigDecimal.class, item.getPrice().getClass());
+            Assertions.assertEquals(item.getId(), item.getId());
+        }
 
     }
 
     /**
      * Tests the read operation for a single car by ID.
+     *
      * @throws Exception if the read operation for a single car fails
      */
     @Test
@@ -106,6 +194,7 @@ public class CarControllerTest {
 
     /**
      * Tests the deletion of a single car by ID.
+     *
      * @throws Exception if the delete operation of a vehicle fails
      */
     @Test
@@ -119,6 +208,7 @@ public class CarControllerTest {
 
     /**
      * Creates an example Car object for use in testing.
+     *
      * @return an example Car object
      */
     private Car getCar() {

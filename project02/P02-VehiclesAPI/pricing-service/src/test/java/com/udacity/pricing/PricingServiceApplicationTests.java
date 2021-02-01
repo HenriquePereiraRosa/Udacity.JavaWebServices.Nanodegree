@@ -1,13 +1,11 @@
 package com.udacity.pricing;
 
 import com.udacity.pricing.domain.price.Price;
-import com.udacity.pricing.service.PricingService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -24,13 +22,6 @@ public class PricingServiceApplicationTests {
 
     @LocalServerPort // (Spring) allow injection of server`s Port
     private Integer port;
-
-    @MockBean
-    private PricingService pricingService;
-
-    @Test
-    public void contextLoads() {
-    }
 
     @Test
     public void priceTesting() {
@@ -55,8 +46,6 @@ public class PricingServiceApplicationTests {
         } catch (Exception e) {
             log.error("Unexpected error retrieving price for vehicle {}", vehicleId, e);
         }
-        ;
-
     }
 
 
