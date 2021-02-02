@@ -3,6 +3,8 @@ package com.udacity.vehicles.api;
 
 import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.service.CarService;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -23,17 +25,18 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  */
 @RestController
 @RequestMapping("/cars")
+@ApiResponses(value = {
+        @ApiResponse(code=400, message = "Bad request, please follow the API documentation for the proper request format."),
+        @ApiResponse(code=401, message = "Due to security constraints, your access request cannot be authorized."),
+        @ApiResponse(code=500, message = "The server is down. Please make sure that the Location and Pricing microservices are running.")
+})
+
 class CarController {
 
-//    private final CarService carService;
     @Autowired
-    CarService carService;
-    private final CarResourceAssembler assembler;
-
-    CarController(CarService carService, CarResourceAssembler assembler) {
-        this.carService = carService;
-        this.assembler = assembler;
-    }
+    private CarService carService;
+    @Autowired
+    private CarResourceAssembler assembler;
 
     /**
      * Creates a list to store any vehicles.

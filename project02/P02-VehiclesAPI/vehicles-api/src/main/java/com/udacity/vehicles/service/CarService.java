@@ -1,5 +1,6 @@
 package com.udacity.vehicles.service;
 
+import com.netflix.discovery.converters.Auto;
 import com.udacity.vehicles.client.maps.Address;
 import com.udacity.vehicles.client.prices.Price;
 import com.udacity.vehicles.domain.car.Car;
@@ -18,16 +19,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class CarService {
 
-    private final CarRepository repository;
+//    private final CarRepository repository; // todo remove
+    @Autowired
+    private CarRepository repository;
     @Autowired
     private PricingService pricingService;
     @Autowired
     private BoogleMapsService boogleMapsService;
 
-    @Autowired
-    public void setDogService(PricingService pricingService) {
-        this.pricingService = pricingService;
-    }
+//    @Autowired
+//    public void setDogService(PricingService pricingService) {
+//        this.pricingService = pricingService;
+//    }
 
     public CarService(CarRepository repository) {
         /**

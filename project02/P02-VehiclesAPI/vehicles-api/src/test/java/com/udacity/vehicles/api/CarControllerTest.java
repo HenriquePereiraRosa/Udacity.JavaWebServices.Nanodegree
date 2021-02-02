@@ -102,7 +102,7 @@ public class CarControllerTest {
     @Test
     public void listCars() throws Exception {
         /**
-         * TODO: Add a test to check that the `get` method works by calling
+         * Done: Add a test to check that the `get` method works by calling
          *   the whole list of vehicles. This should utilize the car from `getCar()`
          *   below (the vehicle will be the first in the list).
          */
@@ -111,21 +111,9 @@ public class CarControllerTest {
                 .toString();
 
         Car car01 = this.getCar();
-        Car car02 = this.getCar();
-        car02.getDetails().setBody("Hatch");
-        car02.getDetails().setManufacturer(new Manufacturer(104, "Dodge"));
-        car02.getDetails().setModel("Viper");
-        car02.setLocation(new Location(60.73061, -53.935242));
-        Car car03 = this.getCar();
-        car03.getDetails().setBody("Hatch");
-        car03.getDetails().setManufacturer(new Manufacturer(100, "Audi"));
-        car03.getDetails().setModel("A4");
-        car03.setLocation(new Location(50.73061, -63.935242));
 
         List<Car> cars = new ArrayList<>();
         cars.add(car01);
-        cars.add(car02);
-        cars.add(car03);
 
         for (Car item : cars) {
 
@@ -154,14 +142,13 @@ public class CarControllerTest {
                         Map.class);
         Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
         Map carsMap = (Map) res.getBody().get("_embedded");
-        List<Car> resCars = (List) carsMap.get("carList");
+        List<Map> resCars = (List) carsMap.get("carList");
 
         Assertions.assertEquals(cars.size(), resCars.size());
 
-        for (Car item : resCars) {
-            Assertions.assertEquals("USD", item.getPrice().getCurrency());
-            Assertions.assertEquals(BigDecimal.class, item.getPrice().getClass());
-            Assertions.assertEquals(item.getId(), item.getId());
+        for (Map item : resCars) {
+            Assertions.assertEquals(1, item.get("id"));
+            Assertions.assertEquals("USED", item.get("condition"));
         }
 
     }
@@ -174,9 +161,51 @@ public class CarControllerTest {
     @Test
     public void findCar() throws Exception {
         /**
-         * TODO: Add a test to check that the `get` method works by calling
+         * Done: Add a test to check that the `get` method works by calling
          *   a vehicle by ID. This should utilize the car from `getCar()` below.
          */
+        String url = new StringBuilder("http://localhost:"
+                + port + "/cars/")
+                .toString();
+
+        Car car01 = this.getCar();
+
+        List<Car> cars = new ArrayList<>();
+        cars.add(car01);
+
+        for (Car item : cars) {
+
+            RestTemplate rest = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+
+            HttpEntity<?> requestEntity = new HttpEntity<Object>(item, headers);
+
+            ResponseEntity<Car> entity = rest.exchange(url,
+                    HttpMethod.POST,
+                    requestEntity,
+                    Car.class);
+            cars.set(cars.indexOf(item), entity.getBody());
+        }
+
+        ParameterizedTypeReference ref = new ParameterizedTypeReference<List<Car>>() {
+        };
+
+        RestTemplate rest = new RestTemplate();
+
+
+        for (Car item : cars) {
+            ResponseEntity<Map> res =
+                    rest.exchange(url + item.getId(),
+                            HttpMethod.GET,
+                            null,
+                            Map.class);
+            Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
+
+            Map carsMap = (Map) res.getBody();
+            Assertions.assertEquals(1, carsMap.get("id"));
+            Assertions.assertEquals("USED", carsMap.get("condition"));
+        }
     }
 
     /**
@@ -187,10 +216,48 @@ public class CarControllerTest {
     @Test
     public void deleteCar() throws Exception {
         /**
-         * TODO: Add a test to check whether a vehicle is appropriately deleted
+         * Done: Add a test to check whether a vehicle is appropriately deleted
          *   when the `delete` method is called from the Car Controller. This
          *   should utilize the car from `getCar()` below.
          */
+        String url = new StringBuilder("http://localhost:"
+                + port + "/cars/")
+                .toString();
+
+        Car car01 = this.getCar();
+
+        List<Car> cars = new ArrayList<>();
+        cars.add(car01);
+
+        for (Car item : cars) {
+
+            RestTemplate rest = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+
+            HttpEntity<?> requestEntity = new HttpEntity<Object>(item, headers);
+
+            ResponseEntity<Car> entity = rest.exchange(url,
+                    HttpMethod.POST,
+                    requestEntity,
+                    Car.class);
+            cars.set(cars.indexOf(item), entity.getBody());
+        }
+
+        ParameterizedTypeReference ref = new ParameterizedTypeReference<List<Car>>() {
+        };
+
+        RestTemplate rest = new RestTemplate();
+
+
+        for (Car item : cars) {
+            ResponseEntity<Map> res =
+                    rest.exchange(url + item.getId(),
+                            HttpMethod.DELETE,
+                            null,
+                            Map.class);
+            Assertions.assertEquals(HttpStatus.NO_CONTENT, res.getStatusCode());
+        }
     }
 
     /**
