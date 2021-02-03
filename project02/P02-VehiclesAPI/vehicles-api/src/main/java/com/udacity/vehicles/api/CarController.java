@@ -28,6 +28,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @ApiResponses(value = {
         @ApiResponse(code=400, message = "Bad request, please follow the API documentation for the proper request format."),
         @ApiResponse(code=401, message = "Due to security constraints, your access request cannot be authorized."),
+        @ApiResponse(code=404, message = "Not found, please check if the resource is saved."),
         @ApiResponse(code=500, message = "The server is down. Please make sure that the Location and Pricing microservices are running.")
 })
 

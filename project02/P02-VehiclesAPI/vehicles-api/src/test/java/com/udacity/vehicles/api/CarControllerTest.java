@@ -3,6 +3,7 @@ package com.udacity.vehicles.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.udacity.vehicles.client.maps.MapsClient;
+import com.udacity.vehicles.client.prices.Price;
 import com.udacity.vehicles.client.prices.PriceClient;
 import com.udacity.vehicles.domain.Condition;
 import com.udacity.vehicles.domain.Location;
@@ -206,6 +207,57 @@ public class CarControllerTest {
             Assertions.assertEquals(1, carsMap.get("id"));
             Assertions.assertEquals("USED", carsMap.get("condition"));
         }
+    }
+
+    /**
+     * Tests the read operation for a single car by ID.
+     *
+     * @throws Exception if the read operation for a single car fails
+     */
+    @Test
+    public void updateCar() throws Exception {
+        /**
+         * Done: Add a test to check that the `get` method works by calling
+         *   a vehicle by ID. This should utilize the car from `getCar()` below.
+         */
+        String url = new StringBuilder("http://localhost:"
+                + port + "/cars/")
+                .toString();
+
+        RestTemplate rest = new RestTemplate();
+
+        Car car01 = this.getCar();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+
+        HttpEntity<?> requestEntity = new HttpEntity<Object>(car01, headers);
+
+        ResponseEntity<Car> res01 = rest.exchange(url,
+                HttpMethod.POST,
+                requestEntity,
+                Car.class);
+        car01 = res01.getBody();
+
+        ParameterizedTypeReference ref = new ParameterizedTypeReference<List<Car>>() {
+        };
+
+        Location newLocation = new Location(60.73061, -53.935242);
+        Price newPrice = new Price();
+        newPrice.setPrice(new BigDecimal(99.000));
+        newPrice.setCurrency("BRL");
+        newPrice.setVehicleId(car01.getId());
+
+        car01.setCondition(Condition.NEW);
+        car01.setLocation(newLocation);
+        car01.setPrice(newPrice);
+
+        requestEntity = new HttpEntity<Object>(car01, headers);
+        ResponseEntity<Car> res02 =
+                rest.exchange(url + car01.getId(),
+                        HttpMethod.PUT,
+                        requestEntity,
+                        Car.class);
+        Assertions.assertEquals(HttpStatus.OK, res02.getStatusCode());
     }
 
     /**
