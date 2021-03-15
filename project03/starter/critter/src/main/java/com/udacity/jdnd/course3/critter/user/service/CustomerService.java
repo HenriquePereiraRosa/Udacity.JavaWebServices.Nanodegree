@@ -1,15 +1,14 @@
 package com.udacity.jdnd.course3.critter.user.service;
 
-import com.udacity.jdnd.course3.critter.exception.NotFoundException;
-import com.udacity.jdnd.course3.critter.user.Customer;
-import com.udacity.jdnd.course3.critter.user.CustomerDTO;
-import com.udacity.jdnd.course3.critter.user.repository.CustomerRepository;
+import com.udacity.jdnd.course3.critter.exception.custom.CouldNotBeNullException;
+import com.udacity.jdnd.course3.critter.exception.custom.DuplicatedResourceException;
+import com.udacity.jdnd.course3.critter.exception.custom.NotFoundException;
+import com.udacity.jdnd.course3.critter.user.*;
+import com.udacity.jdnd.course3.critter.user.repository.customer.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CustomerService {
@@ -17,13 +16,29 @@ public class CustomerService {
     @Autowired
     private CustomerRepository customerRepo;
 
+
     /**
-     * Gathers a list of all vehicles
+     * Gets All Customer information
      *
-     * @return a list of all vehicles in the CarRepository
+     * @return the requested information
      */
-    public List<Customer> list() {
-        return customerRepo.findAll();
+    public List<CustomerDTO> findAll() {
+        List<CustomerDTO> customersDTO = new ArrayList<>();
+        List<Customer> customers = customerRepo.findAll();
+        customers.forEach(customer -> customersDTO.add(this.objToDTO(customer)));
+        return customersDTO;
+    }
+
+    /**
+     * Gets All Customer information including Pets info
+     *
+     * @return the requested information
+     */
+    public List<CustomerDTO> findAllFetchByPets() {
+        List<CustomerDTO> customersDTO = new ArrayList<>();
+        List<Customer> customers = customerRepo.findAllFetchByPets();
+        customers.forEach(customer -> customersDTO.add(this.objToDTO(customer)));
+        return customersDTO;
     }
 
     /**
@@ -35,9 +50,20 @@ public class CustomerService {
     public Customer findById(Long id) {
         Optional<Customer> obj = customerRepo.findById(id);
         if (obj.isEmpty())
-            throw new NotFoundException("Customer Not Found.");
+            throw new NotFoundException();
 
         return obj.get();
+    }
+
+    /**
+     * Gets Customer information by ID (or throws exception if non-existent)
+     *
+     * @param petId the ID number to gather information on
+     * @return the requested information
+     */
+    public CustomerDTO findCustomerByPetId(Long petId) {
+        Customer customer = customerRepo.findCustomerByPetId(petId);
+        return this.objToDTO(customer);
     }
 
     /**
@@ -47,9 +73,12 @@ public class CustomerService {
      * @return the new/updated car is stored in the repository
      */
     public CustomerDTO save(CustomerDTO customerDTO) {
-//        if (customerDTO.getName() != null) {
-//            return this.update(customerDTO);
-//        }
+        if (customerDTO.getName() == null)
+            throw new CouldNotBeNullException();
+        List<Customer> customers = customerRepo.findByName(customerDTO.getName());
+        if (!customers.isEmpty())
+            throw new DuplicatedResourceException();
+
         return this.objToDTO(customerRepo.save(this.dtoToObj(customerDTO)));
     }
 
@@ -60,10 +89,7 @@ public class CustomerService {
      * @return the new/updated car is stored in the repository
      */
     public CustomerDTO update(CustomerDTO customerDTO) {
-        if (customerDTO.getName() == null)
-            throw new NotFoundException();
-
-        return this.objToDTO(customerRepo.findByName(customerDTO.getName())
+        return this.objToDTO(customerRepo.findOneByName(customerDTO.getName())
                 .map(objToBeUpdated -> {
                     if (customerDTO.getName() != null)
                         objToBeUpdated.setName(customerDTO.getName());
@@ -85,8 +111,7 @@ public class CustomerService {
     public void delete(Long id) {
         Optional<Customer> obj = customerRepo.findById(id);
         if (obj.isEmpty())
-            throw new NotFoundException("Customer Not Found.");
-
+            throw new NotFoundException();
         customerRepo.delete(obj.get());
     }
 
@@ -94,7 +119,7 @@ public class CustomerService {
      * Converts Obj to DTO
      *
      * @param customer to be converted
-     * @return  customerDTO
+     * @return customerDTO
      */
     public CustomerDTO objToDTO(Customer customer) {
         CustomerDTO customerDTO = new CustomerDTO();
@@ -118,19 +143,5 @@ public class CustomerService {
         customer.setPhoneNumber(customerDTO.getPhoneNumber());
         customer.setPets(customerDTO.getPets());
         return customer;
-    }
-
-    public List<CustomerDTO> findAll() {
-        List<CustomerDTO> customersDTO = new ArrayList<>();
-        List<Customer> customers = customerRepo.findAll();
-        customers.forEach(customer -> customersDTO.add(this.objToDTO(customer)));
-        return customersDTO;
-    }
-
-    public List<CustomerDTO> findAllFetchByPets() {
-        List<CustomerDTO> customersDTO = new ArrayList<>();
-        List<Customer> customers = customerRepo.findAllFetchByPets();
-        customers.forEach(customer -> customersDTO.add(this.objToDTO(customer)));
-        return customersDTO;
     }
 }
