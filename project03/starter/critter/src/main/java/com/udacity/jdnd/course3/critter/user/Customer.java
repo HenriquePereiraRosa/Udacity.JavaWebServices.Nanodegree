@@ -19,8 +19,7 @@ public class Customer {
     private String phoneNumber;
     private String notes;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "petId")
+    @OneToMany(mappedBy = "owner")
     private List<Pet> pets;
 
     public Long getId() {

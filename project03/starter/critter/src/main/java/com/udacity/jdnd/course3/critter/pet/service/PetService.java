@@ -1,11 +1,12 @@
 package com.udacity.jdnd.course3.critter.pet.service;
 
 import com.udacity.jdnd.course3.critter.exception.custom.CouldNotBeNullException;
-import com.udacity.jdnd.course3.critter.exception.custom.DuplicatedResourceException;
 import com.udacity.jdnd.course3.critter.exception.custom.NotFoundException;
 import com.udacity.jdnd.course3.critter.pet.Pet;
 import com.udacity.jdnd.course3.critter.pet.PetDTO;
 import com.udacity.jdnd.course3.critter.pet.repository.PetRepository;
+import com.udacity.jdnd.course3.critter.user.CustomerDTO;
+import com.udacity.jdnd.course3.critter.user.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,8 @@ public class PetService {
 
     @Autowired
     private PetRepository petRepo;
+    @Autowired
+    private CustomerService customerService;
 
 
     /**
@@ -78,9 +81,9 @@ public class PetService {
     public PetDTO save(PetDTO petDTO) {
         if (petDTO.getName() == null)
             throw new CouldNotBeNullException();
-        List<Pet> pets = petRepo.findByName(petDTO.getName());
-        if (!pets.isEmpty())
-            throw new DuplicatedResourceException();
+//        List<Pet> pets = petRepo.findByName(petDTO.getName());
+//        if (!pets.isEmpty())
+//            throw new DuplicatedResourceException();
 
         return this.objToDTO(petRepo.save(this.dtoToObj(petDTO)));
     }
@@ -99,8 +102,9 @@ public class PetService {
             pet.setType(petDTO.getType());
         if (petDTO.getName() != null)
             pet.setName(petDTO.getName());
-        if (petDTO.getOwnerId() != null)
-            pet.setOwnerId(petDTO.getOwnerId());
+        if (petDTO.getOwnerDto() != null)
+            pet.setOwner(customerService
+                    .dtoToObj(petDTO.getOwnerDto()));
         if (petDTO.getBirthDate() != null)
             pet.setBirthDate(petDTO.getBirthDate());
         if (petDTO.getNotes() != null)
@@ -125,17 +129,18 @@ public class PetService {
      */
     public PetDTO objToDTO(Pet pet) {
         PetDTO petDTO = new PetDTO();
-        if (petDTO.getId() != null)
+        if (pet.getId() != null)
             petDTO.setId(pet.getId());
-        if (petDTO.getType() != null)
+        if (pet.getType() != null)
             petDTO.setType(pet.getType());
-        if (petDTO.getName() != null)
+        if (pet.getName() != null)
             petDTO.setName(pet.getName());
-        if (petDTO.getOwnerId() != null)
-            petDTO.setOwnerId(pet.getOwnerId());
-        if (petDTO.getBirthDate() != null)
+        if (pet.getOwner() != null)
+            petDTO.setOwnerDto(customerService
+                    .objToDTO(pet.getOwner()));
+        if (pet.getBirthDate() != null)
             petDTO.setBirthDate(pet.getBirthDate());
-        if (petDTO.getNotes() != null)
+        if (pet.getNotes() != null)
             petDTO.setNotes(pet.getNotes());
 
         return petDTO;
@@ -148,18 +153,19 @@ public class PetService {
      */
     public Pet dtoToObj(PetDTO petDTO) {
         Pet pet = new Pet();
-        if (pet.getId() != null)
-            pet.setId(pet.getId());
-        if (pet.getType() != null)
-            pet.setType(pet.getType());
-        if (pet.getName() != null)
-            pet.setName(pet.getName());
-        if (pet.getOwnerId() != null)
-            pet.setOwnerId(pet.getOwnerId());
-        if (pet.getBirthDate() != null)
-            pet.setBirthDate(pet.getBirthDate());
-        if (pet.getNotes() != null)
-            pet.setNotes(pet.getNotes());
+        if (petDTO.getId() != null)
+            pet.setId(petDTO.getId());
+        if (petDTO.getType() != null)
+            pet.setType(petDTO.getType());
+        if (petDTO.getName() != null)
+            pet.setName(petDTO.getName());
+        if (petDTO.getOwnerDto() != null)
+            pet.setOwner(customerService
+                    .dtoToObj(petDTO.getOwnerDto()));
+        if (petDTO.getBirthDate() != null)
+            pet.setBirthDate(petDTO.getBirthDate());
+        if (petDTO.getNotes() != null)
+            pet.setNotes(petDTO.getNotes());
 
         return pet;
     }

@@ -30,6 +30,11 @@ public class UserController {
         return customerService.findAllFetchByPets();
     }
 
+    @GetMapping("/customer/{id}")
+    public CustomerDTO getCustomerById(@PathVariable Long id){
+        return customerService.findById(id);
+    }
+
     @GetMapping("/customer/pet/{petId}")
     public CustomerDTO getOwnerByPet(@PathVariable long petId){
         return customerService.findCustomerByPetId(petId);
@@ -52,10 +57,16 @@ public class UserController {
         return employeeService.findAll();
     }
 
+    @GetMapping("/employee/{id}")
+    public EmployeeDTO getEmployeeById(@PathVariable Long id){
+        return employeeService.findById(id);
+    }
+
     @PostMapping("/employee")
     public EmployeeDTO saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
         return employeeService.save(employeeDTO);
     }
+
     @PutMapping("/employee")
     public EmployeeDTO updateEmployee(@RequestBody EmployeeDTO employeeDTO) {
         return employeeService.update(employeeDTO);

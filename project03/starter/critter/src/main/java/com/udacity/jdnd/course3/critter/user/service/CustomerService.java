@@ -47,12 +47,12 @@ public class CustomerService {
      * @param id the ID number to gather information on
      * @return the requested information
      */
-    public Customer findById(Long id) {
+    public CustomerDTO findById(Long id) {
         Optional<Customer> obj = customerRepo.findById(id);
         if (obj.isEmpty())
             throw new NotFoundException();
 
-        return obj.get();
+        return this.objToDTO(obj.get());
     }
 
     /**
@@ -75,9 +75,9 @@ public class CustomerService {
     public CustomerDTO save(CustomerDTO customerDTO) {
         if (customerDTO.getName() == null)
             throw new CouldNotBeNullException();
-        List<Customer> customers = customerRepo.findByName(customerDTO.getName());
-        if (!customers.isEmpty())
-            throw new DuplicatedResourceException();
+//        List<Customer> customers = customerRepo.findByName(customerDTO.getName());
+//        if (!customers.isEmpty())
+//            throw new DuplicatedResourceException();
 
         return this.objToDTO(customerRepo.save(this.dtoToObj(customerDTO)));
     }

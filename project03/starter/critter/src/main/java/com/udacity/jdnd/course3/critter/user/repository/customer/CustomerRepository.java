@@ -13,13 +13,14 @@ import java.util.Optional;
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     Optional<Customer> findOneByName(String name);
+
     List<Customer> findByName(String name);
 
     @Query("select c from Customer c left join fetch c.pets")
     List<Customer> findAllFetchByPets();
 
-
-    @Query("select c from Customer c left join fetch c.pets p" +
+    @Query("select c from Customer c " +
+            " left join fetch c.pets p " +
             " where p.id = :petId")
     Customer findCustomerByPetId(@Param("petId") Long petId);
 }

@@ -1,7 +1,6 @@
 package com.udacity.jdnd.course3.critter.user.service;
 
 import com.udacity.jdnd.course3.critter.exception.custom.CouldNotBeNullException;
-import com.udacity.jdnd.course3.critter.exception.custom.DuplicatedResourceException;
 import com.udacity.jdnd.course3.critter.exception.custom.NotFoundException;
 import com.udacity.jdnd.course3.critter.user.Employee;
 import com.udacity.jdnd.course3.critter.user.EmployeeDTO;
@@ -55,8 +54,8 @@ public class EmployeeService {
     public EmployeeDTO save(EmployeeDTO employeeDTO) {
         if (employeeDTO.getName() == null)
             throw new CouldNotBeNullException();
-        if (employeeRepo.findByName(employeeDTO.getName()).isEmpty())
-            throw new DuplicatedResourceException();
+//        if (employeeRepo.findByName(employeeDTO.getName()).isEmpty())
+//            throw new DuplicatedResourceException();
 
         return this.objToDTO(employeeRepo.save(this.dtoToObj(employeeDTO)));
     }
@@ -126,13 +125,13 @@ public class EmployeeService {
      */
     public EmployeeDTO objToDTO(Employee employee) {
         EmployeeDTO employeeDTO = new EmployeeDTO();
-        if (employeeDTO.getId() != null)
+        if (employee.getId() != null)
             employeeDTO.setId(employee.getId());
-        if (employeeDTO.getName() != null)
+        if (employee.getName() != null)
             employeeDTO.setName(employee.getName());
-        if (employeeDTO.getSkills() != null)
+        if (employee.getSkills() != null)
             employeeDTO.setSkills(employee.getSkills());
-        if (employeeDTO.getDaysAvailable() != null)
+        if (employee.getDaysAvailable() != null)
             employeeDTO.setDaysAvailable(employee.getDaysAvailable());
         return employeeDTO;
     }
