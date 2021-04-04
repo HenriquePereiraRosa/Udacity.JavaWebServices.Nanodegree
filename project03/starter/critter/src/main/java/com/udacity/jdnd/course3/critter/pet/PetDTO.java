@@ -12,7 +12,7 @@ public class PetDTO {
     private Long id;
     private PetType type;
     private String name;
-    private CustomerDTO ownerDto;
+    private Long ownerId;
     private LocalDate birthDate;
     private String notes;
 
@@ -32,12 +32,12 @@ public class PetDTO {
         this.name = name;
     }
 
-    public CustomerDTO getOwnerDto() {
-        return ownerDto;
+    public Long getOwnerId() {
+        return ownerId;
     }
 
-    public void setOwnerDto(CustomerDTO ownerDto) {
-        this.ownerDto = ownerDto;
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     public LocalDate getBirthDate() {

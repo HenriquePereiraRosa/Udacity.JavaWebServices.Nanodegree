@@ -1,7 +1,6 @@
 package com.udacity.jdnd.course3.critter.pet;
 
 import com.udacity.jdnd.course3.critter.user.Customer;
-import com.udacity.jdnd.course3.critter.user.CustomerDTO;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -19,8 +18,9 @@ public class Pet {
     private Long id;
     private PetType type;
     private String name;
-    @ManyToOne
-    @JoinColumn(name="owner_id")
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="owner_id", referencedColumnName = "id")
     private Customer owner;
     private LocalDate birthDate;
     private String notes;

@@ -10,12 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CustomerRepository extends JpaRepository<Customer, Long>, CustomCustomerRepository {
+public interface CustomCustomerRepository {
 
-    Optional<Customer> findOneByName(String name);
-
-    List<Customer> findByName(String name);
-
-    @Query("select c from Customer c left join fetch c.pets")
-    List<Customer> findAllFetchByPets();
+    List<Customer> findCustomerByPetId(@Param("petId") Long petId);
 }

@@ -1,7 +1,7 @@
 package com.udacity.jdnd.course3.critter.schedule;
 
-import com.udacity.jdnd.course3.critter.user.Customer;
-import com.udacity.jdnd.course3.critter.user.CustomerDTO;
+import com.udacity.jdnd.course3.critter.schedule.service.ScheduleDTOHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,28 +13,31 @@ import java.util.List;
 @RequestMapping("/schedule")
 public class ScheduleController {
 
+    @Autowired
+    ScheduleDTOHelper scheduleDTOHelper;
+
     @PostMapping
     public ScheduleDTO createSchedule(@RequestBody ScheduleDTO scheduleDTO) {
-        throw new UnsupportedOperationException();
+        return scheduleDTOHelper.save(scheduleDTO);
     }
 
     @GetMapping
     public List<ScheduleDTO> getAllSchedules() {
-        throw new UnsupportedOperationException();
+        return scheduleDTOHelper.findAll();
     }
 
     @GetMapping("/pet/{petId}")
-    public List<ScheduleDTO> getScheduleForPet(@PathVariable long petId) {
-        throw new UnsupportedOperationException();
+    public List<ScheduleDTO> getScheduleForPet(@PathVariable Long petId) {
+        return scheduleDTOHelper.findDTOById(petId);
     }
 
     @GetMapping("/employee/{employeeId}")
-    public List<ScheduleDTO> getScheduleForEmployee(@PathVariable long employeeId) {
-        throw new UnsupportedOperationException();
+    public List<ScheduleDTO> getScheduleForEmployee(@PathVariable Long employeeId) {
+        return scheduleDTOHelper.getScheduleForEmployee(employeeId);
     }
 
     @GetMapping("/customer/{customerId}")
     public List<ScheduleDTO> getScheduleForCustomer(@PathVariable Long customerId) {
-        throw new UnsupportedOperationException();
+        return scheduleDTOHelper.getScheduleForCustomer(customerId);
     }
 }

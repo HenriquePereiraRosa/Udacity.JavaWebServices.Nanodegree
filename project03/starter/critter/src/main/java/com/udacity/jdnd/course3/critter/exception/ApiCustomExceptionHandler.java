@@ -2,6 +2,7 @@ package com.udacity.jdnd.course3.critter.exception;
 
 import com.udacity.jdnd.course3.critter.exception.custom.CouldNotBeNullException;
 import com.udacity.jdnd.course3.critter.exception.custom.DuplicatedResourceException;
+import com.udacity.jdnd.course3.critter.exception.custom.ResourceNotFoundException;
 import javassist.NotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -114,6 +115,17 @@ public class ApiCustomExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({DuplicatedResourceException.class})
     public ResponseEntity<Object> handleDuplicatedResourceException(DuplicatedResourceException ex, WebRequest request) {
         String userMsg = messageSource.getMessage("resource.already.exist", null, LocaleContextHolder.getLocale());
+        String detailedMsg = ex.toString();
+        List<CustomError> errors = Arrays.asList(new CustomError(userMsg, detailedMsg));
+        log.error(detailedMsg, ex);
+        return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+
+    // Exception when is tried to delete a non existing resource
+    @ExceptionHandler({ResourceNotFoundException.class})
+    public ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
+        String userMsg = messageSource.getMessage("resource.not.found", null, LocaleContextHolder.getLocale());
         String detailedMsg = ex.toString();
         List<CustomError> errors = Arrays.asList(new CustomError(userMsg, detailedMsg));
         log.error(detailedMsg, ex);

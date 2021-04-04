@@ -1,8 +1,6 @@
 package com.udacity.jdnd.course3.critter.pet.repository;
 
 import com.udacity.jdnd.course3.critter.pet.Pet;
-import com.udacity.jdnd.course3.critter.user.Customer;
-import com.udacity.jdnd.course3.critter.user.CustomerDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,4 +18,7 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
 
     @Query("from Pet p where p.owner.id = :ownerId")
     List<Pet> findAllByOwnerId(@Param("ownerId") Long ownerId);
+
+    @Query("from Pet p where p.id in (:ids)")
+    List<Pet> findAllByIds(@Param("ids") List<Long> petIds);
 }

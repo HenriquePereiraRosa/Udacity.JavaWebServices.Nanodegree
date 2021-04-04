@@ -1,7 +1,7 @@
 package com.udacity.jdnd.course3.critter.user;
 
-import com.udacity.jdnd.course3.critter.user.service.CustomerService;
-import com.udacity.jdnd.course3.critter.user.service.EmployeeService;
+import com.udacity.jdnd.course3.critter.user.service.CustomerDTOHelper;
+import com.udacity.jdnd.course3.critter.user.service.EmployeeDTOHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,72 +20,72 @@ import java.util.Set;
 public class UserController {
 
     @Autowired
-    private CustomerService customerService;
+    private CustomerDTOHelper customerDTOHelper;
     @Autowired
-    private EmployeeService employeeService;
+    private EmployeeDTOHelper employeeDTOHelper;
 
 
     @GetMapping("/customer")
     public List<CustomerDTO> getAllCustomers(){
-        return customerService.findAllFetchByPets();
+        return customerDTOHelper.findAll();
     }
 
     @GetMapping("/customer/{id}")
     public CustomerDTO getCustomerById(@PathVariable Long id){
-        return customerService.findById(id);
+        return customerDTOHelper.findById(id);
     }
 
     @GetMapping("/customer/pet/{petId}")
     public CustomerDTO getOwnerByPet(@PathVariable long petId){
-        return customerService.findCustomerByPetId(petId);
+        return customerDTOHelper.findCustomerByPetId(petId);
     }
 
     @PostMapping("/customer")
     public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO) {
-        CustomerDTO customerDTOSvd = customerService.save(customerDTO);
+        CustomerDTO customerDTOSvd = customerDTOHelper.save(customerDTO);
         return customerDTOSvd;
     }
 
     @PutMapping("/customer")
     public CustomerDTO updateCustomer(@RequestBody CustomerDTO customerDTO) {
-        CustomerDTO customerDTOSvd = customerService.update(customerDTO);
+        CustomerDTO customerDTOSvd = customerDTOHelper.update(customerDTO);
         return customerDTOSvd;
     }
 
     @GetMapping("/employee")
     public List<EmployeeDTO> getAllEmployees(){
-        return employeeService.findAll();
+        return employeeDTOHelper.findAll();
     }
 
     @GetMapping("/employee/{id}")
     public EmployeeDTO getEmployeeById(@PathVariable Long id){
-        return employeeService.findById(id);
+        return employeeDTOHelper.findById(id);
     }
 
     @PostMapping("/employee")
     public EmployeeDTO saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
-        return employeeService.save(employeeDTO);
+        return employeeDTOHelper.save(employeeDTO);
     }
 
     @PutMapping("/employee")
     public EmployeeDTO updateEmployee(@RequestBody EmployeeDTO employeeDTO) {
-        return employeeService.update(employeeDTO);
+        return employeeDTOHelper.update(employeeDTO);
     }
 
     @PostMapping("/employee/{employeeId}")
     public EmployeeDTO getEmployee(@PathVariable long employeeId) {
-        return employeeService.findById(employeeId);
+        return employeeDTOHelper.findById(employeeId);
     }
 
     @PutMapping("/employee/{employeeId}")
-    public void setAvailability(@RequestBody Set<DayOfWeek> daysAvailable,
+    public EmployeeDTO setAvailability(@RequestBody Set<DayOfWeek> daysAvailable,
                                 @PathVariable long employeeId) {
-        employeeService.saveAvailability(employeeId, daysAvailable);
+        return employeeDTOHelper.saveAvailability(employeeId, daysAvailable);
     }
 
     @GetMapping("/employee/availability")
     public List<EmployeeDTO> findEmployeesForService(@RequestBody EmployeeRequestDTO employeeRequestDTO) {
-        return employeeService.getAvailability(employeeRequestDTO);
+        return employeeDTOHelper.getAvailability(employeeRequestDTO);
     }
 
 }
