@@ -50,25 +50,30 @@ public class EmployeeRepositoryImpl implements CustomEmployeeRepository {
                 employees.add(employee);
             }
 
+            Integer skillInt = rs.getInt("skills");
+            if(skillInt == (int) skillInt) {
+                EmployeeSkill skill = EmployeeSkill.fromCode(skillInt);
+                if (employee.getSkills() == null
+                        || employee.getSkills().isEmpty()) {
 
-            EmployeeSkill skill = EmployeeSkill.fromCode(rs.getInt("skills"));
-            DayOfWeek day = DayOfWeek.of(rs.getInt("days_available"));
-
-            if(employee.getSkills() == null
-                    || employee.getSkills().isEmpty()) {
-
-                Set<EmployeeSkill> skills = new HashSet<>();
-                employee.setSkills(skills);
+                    Set<EmployeeSkill> skills = new HashSet<>();
+                    employee.setSkills(skills);
+                }
+                employee.getSkills().add(skill);
             }
-            employee.getSkills().add(skill);
 
-            if(employee.getDaysAvailable() == null
-                    || employee.getDaysAvailable().isEmpty()) {
 
-                Set<DayOfWeek> daysOfWeek = new HashSet<>();
-                employee.setDaysAvailable(daysOfWeek);
+            String dayStr = rs.getString("days_available");
+            if(dayStr != null && !dayStr.isEmpty() ) {
+                DayOfWeek day = DayOfWeek.valueOf(dayStr);
+                if (employee.getDaysAvailable() == null
+                        || employee.getDaysAvailable().isEmpty()) {
+
+                    Set<DayOfWeek> daysOfWeek = new HashSet<>();
+                    employee.setDaysAvailable(daysOfWeek);
+                }
+                employee.getDaysAvailable().add(day);
             }
-            employee.getDaysAvailable().add(day);
 
             return null;
         };

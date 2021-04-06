@@ -22,7 +22,7 @@ public class Employee {
     private Set<EmployeeSkill> skills;
 
     @ElementCollection(targetClass = DayOfWeek.class, fetch = FetchType.LAZY)
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private Set<DayOfWeek> daysAvailable;
 
     public Long getId() {

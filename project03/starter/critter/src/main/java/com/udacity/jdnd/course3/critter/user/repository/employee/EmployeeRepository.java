@@ -16,7 +16,7 @@ import java.util.Set;
 public interface EmployeeRepository extends JpaRepository<Employee, Long>, CustomEmployeeRepository {
     Optional<Employee> findByName(String name);
 
-    @Query("from Employee e where e.daysAvailable in (:days) and e.skills in (:skills) ")
-    List<Employee> findByDaysAvailableAndSkills(@Param("days") Set<DayOfWeek> daysOfWeek,
-                                                @Param("skills") Set<EmployeeSkill> skills);
+    @Query("from Employee e where e.daysAvailable in :days and e.skills in :skills ")
+    List<Employee> findByDaysAvailableAndSkills(@Param("days") List<DayOfWeek> daysOfWeek,
+                                                @Param("skills") List<EmployeeSkill> skills);
 }

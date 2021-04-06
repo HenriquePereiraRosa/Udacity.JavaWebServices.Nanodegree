@@ -5,15 +5,14 @@ import com.udacity.jdnd.course3.critter.exception.custom.CouldNotBeNullException
 import com.udacity.jdnd.course3.critter.exception.custom.ResourceNotFoundException;
 import com.udacity.jdnd.course3.critter.user.Employee;
 import com.udacity.jdnd.course3.critter.user.EmployeeRequestDTO;
+import com.udacity.jdnd.course3.critter.user.EmployeeSkill;
 import com.udacity.jdnd.course3.critter.user.repository.employee.EmployeeRepository;
 import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class EmployeeService {
@@ -44,6 +43,7 @@ public class EmployeeService {
 
         return obj.get();
     }
+
     /**
      * Gets Object information by ID (or throws exception if non-existent)
      *
@@ -53,9 +53,7 @@ public class EmployeeService {
     public Employee findAllFetchBySkillAndDaysAvailable(Long id) {
         Employee employee = employeeRepo
                 .findAllFetchBySkillAndDaysAvailable(id).get(0);
-        if (employee == null
-                || employee.getDaysAvailable() == null
-                || employee.getSkills() == null)
+        if (employee == null)
             throw new ResourceNotFoundException();
 
         return employee;
@@ -111,10 +109,12 @@ public class EmployeeService {
      * @param employeeRequestDTO
      */
     public List<Employee> getAvailability(EmployeeRequestDTO employeeRequestDTO) {
-        List<Employee> employees = employeeRepo
-                .findByDaysAvailableAndSkills(Sets
-                                .newHashSet(employeeRequestDTO.getDate().getDayOfWeek()),
-                        employeeRequestDTO.getSkills());
+
+        List<EmployeeSkill> skills = new ArrayList<>(employeeRequestDTO.getSkills());
+        List<DayOfWeek> days = new ArrayList<>();
+        days.add(employeeRequestDTO.getDate().getDayOfWeek());
+
+        List<Employee> employees = employeeRepo.findByDaysAvailableAndSkills(days, skills);
         return employees;
     }
 
