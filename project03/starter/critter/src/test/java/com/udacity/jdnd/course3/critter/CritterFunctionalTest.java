@@ -116,7 +116,7 @@ public class CritterFunctionalTest {
 
         CustomerDTO owner = userController.getOwnerByPet(newPet.getId());
         Assertions.assertEquals(owner.getId(), newCustomer.getId());
-        Assertions.assertEquals(owner.getPets().get(0), newPet.getId());
+        Assertions.assertEquals(owner.getPets().get(0).getId(), newPet.getId());
     }
 
     @Test

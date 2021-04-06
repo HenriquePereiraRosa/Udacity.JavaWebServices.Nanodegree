@@ -1,10 +1,12 @@
 package com.udacity.jdnd.course3.critter.user.service;
 
+import com.google.common.collect.Sets;
 import com.udacity.jdnd.course3.critter.exception.custom.CouldNotBeNullException;
 import com.udacity.jdnd.course3.critter.exception.custom.ResourceNotFoundException;
 import com.udacity.jdnd.course3.critter.user.Employee;
 import com.udacity.jdnd.course3.critter.user.EmployeeRequestDTO;
 import com.udacity.jdnd.course3.critter.user.repository.employee.EmployeeRepository;
+import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +43,22 @@ public class EmployeeService {
             throw new ResourceNotFoundException();
 
         return obj.get();
+    }
+    /**
+     * Gets Object information by ID (or throws exception if non-existent)
+     *
+     * @param id the ID number to gather information on
+     * @return the requested information
+     */
+    public Employee findAllFetchBySkillAndDaysAvailable(Long id) {
+        Employee employee = employeeRepo
+                .findAllFetchBySkillAndDaysAvailable(id).get(0);
+        if (employee == null
+                || employee.getDaysAvailable() == null
+                || employee.getSkills() == null)
+            throw new ResourceNotFoundException();
+
+        return employee;
     }
 
     /**
@@ -94,7 +112,8 @@ public class EmployeeService {
      */
     public List<Employee> getAvailability(EmployeeRequestDTO employeeRequestDTO) {
         List<Employee> employees = employeeRepo
-                .findByDaysAvailableAndSkills(employeeRequestDTO.getDate().getDayOfWeek(),
+                .findByDaysAvailableAndSkills(Sets
+                                .newHashSet(employeeRequestDTO.getDate().getDayOfWeek()),
                         employeeRequestDTO.getSkills());
         return employees;
     }
@@ -104,11 +123,10 @@ public class EmployeeService {
      *
      * @param employeeId
      * @param daysAvailable
-     *
      * @return Employee
      */
     public Employee saveAvailability(Long employeeId, Set<DayOfWeek> daysAvailable) {
-        Employee employee = this.findById(employeeId);
+        Employee employee = this.findAllFetchBySkillAndDaysAvailable(employeeId);
         employee.setDaysAvailable(daysAvailable);
         return employeeRepo.save(employee);
     }
@@ -117,7 +135,6 @@ public class EmployeeService {
      * Finda All by Ids
      *
      * @param employeeIds
-     *
      * @return List<Employee>
      */
     public List<Employee> findAllByIds(List<Long> employeeIds) {

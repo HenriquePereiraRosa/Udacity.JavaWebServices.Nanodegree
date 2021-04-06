@@ -1,5 +1,7 @@
 package com.udacity.jdnd.course3.critter.user;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -8,6 +10,7 @@ import java.util.Set;
  * to the database directly.
  */
 public class EmployeeRequestDTO {
+    @Enumerated(EnumType.ORDINAL)
     private Set<EmployeeSkill> skills;
     private LocalDate date;
 

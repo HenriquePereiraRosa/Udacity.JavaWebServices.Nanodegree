@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class CustomerRepositoryImpl implements CustomCustomerRepository {
@@ -27,20 +28,29 @@ public class CustomerRepositoryImpl implements CustomCustomerRepository {
 
         RowMapper rowMapper = (rs, rowNum) -> {
 
+
+            // todo : DEBUG Col Names
+            String colNames = "";
+            int count = rs.getMetaData().getColumnCount();
+            for (int i = 1; i <= count; i++) {
+                colNames += rs.getMetaData().getColumnName(i) + " | ";
+            }
+
             Customer customer = new Customer();
-            customer.setId(rs.getLong("c.id"));
-            customer.setName(rs.getString("c.name"));
-            customer.setNotes(rs.getString("c.notes"));
-            customer.setPhoneNumber(rs.getString("c.phone_number"));
+            customer.setId(rs.getLong("id"));
+            customer.setName(rs.getString("name"));
+            customer.setNotes(rs.getString("notes"));
+            customer.setPhoneNumber(rs.getString("phone_number"));
 
             Pet pet = new Pet();
-            pet.setId(rs.getLong("p.id"));
-            pet.setBirthDate(LocalDate
-                    .from(rs.getDate("p.birth_date").toInstant()));
-            pet.setName(rs.getString("p.name"));
-            pet.setNotes(rs.getString("p.notes"));
-            pet.setType(PetType.fromCode(rs.getInt("p.type")));
-            pet.setOwner(customer);
+            pet.setId(rs.getLong("id"));
+            Date birthDate = rs.getDate("birth_date");
+            if (birthDate != null)
+                pet.setBirthDate(LocalDate.from(birthDate.toInstant()));
+            pet.setName(rs.getString("name"));
+            pet.setNotes(rs.getString("notes"));
+            pet.setType(PetType.fromCode(rs.getInt("type")));
+//            pet.setOwner(customer);
 
             List<Pet> pets = new ArrayList<>();
             pets.add(pet);
@@ -51,7 +61,8 @@ public class CustomerRepositoryImpl implements CustomCustomerRepository {
 
         List<Customer> customers = jdbcTemplate.query(
                 sQuery.toString(),
-                new MapSqlParameterSource(),
+                new MapSqlParameterSource()
+                        .addValue("petId", petId),
                 rowMapper);
 
         return customers;

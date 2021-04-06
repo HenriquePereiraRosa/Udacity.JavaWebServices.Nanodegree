@@ -12,5 +12,5 @@ import java.util.Optional;
 @Repository
 public interface CustomCustomerRepository {
 
-    List<Customer> findCustomerByPetId(@Param("petId") Long petId);
+    List<Customer> findCustomerByPetId(Long petId);
 }
