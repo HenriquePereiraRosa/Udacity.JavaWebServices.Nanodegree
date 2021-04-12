@@ -2,6 +2,8 @@ package com.udacity.jdnd.course3.critter.schedule.service;
 
 import com.udacity.jdnd.course3.critter.exception.custom.CouldNotBeNullException;
 import com.udacity.jdnd.course3.critter.exception.custom.ResourceNotFoundException;
+import com.udacity.jdnd.course3.critter.pet.Pet;
+import com.udacity.jdnd.course3.critter.pet.repository.PetRepository;
 import com.udacity.jdnd.course3.critter.schedule.Schedule;
 import com.udacity.jdnd.course3.critter.schedule.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +13,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ScheduleService {
 
     @Autowired
-    private ScheduleRepository scheduleRepo;
+    private ScheduleRepository scheduleRepository;
+    @Autowired
+    private PetRepository petRepository;
 
 
     /**
@@ -25,7 +30,27 @@ public class ScheduleService {
      * @return the requested information
      */
     public List<Schedule> findAll() {
-        List<Schedule> schedules = scheduleRepo.findAll();
+        List<Schedule> schedules = scheduleRepository.findAll();
+        return schedules;
+    }
+
+    /**
+     * Gets All Schedule information
+     *
+     * @return the requested information
+     */
+    public List<Schedule> findAllFetchPets() {
+        List<Schedule> schedules = scheduleRepository.findAllFetchPets();
+        return schedules;
+    }
+
+    /**
+     * Gets All Schedule information
+     *
+     * @return the requested information
+     */
+    public List<Schedule> findAllFetchAll() {
+        List<Schedule> schedules = scheduleRepository.findAllFetchAll();
         return schedules;
     }
 
@@ -35,13 +60,24 @@ public class ScheduleService {
      * @param id the ID number to gather information on
      * @return the requested information
      */
-    public List<Schedule> findById(Long id) {
-        Optional<Schedule> obj = scheduleRepo.findById(id);
+    public Schedule findById(Long id) {
+        Optional<Schedule> obj = scheduleRepository.findById(id);
         if (obj.isEmpty())
             throw new ResourceNotFoundException();
-        List<Schedule> ret = new ArrayList<>();
-        ret.add(obj.get());
-        return ret;
+        return obj.get();
+    }
+
+    /**
+     * Gets Schedule information by Pet ID (or throws exception if non-existent)
+     *
+     * @param id the ID number to gather information on
+     * @return the requested information
+     */
+    public List<Schedule> findByPetId(Long id) {
+        List<Schedule> schedules = scheduleRepository.findAllByPetId(id);
+        if (schedules.isEmpty())
+            throw new ResourceNotFoundException();
+        return schedules;
     }
 
     /**
@@ -53,7 +89,7 @@ public class ScheduleService {
     public Schedule save(Schedule schedule) {
         if (schedule.getDate() == null)
             throw new CouldNotBeNullException();
-        return scheduleRepo.save(schedule);
+        return scheduleRepository.save(schedule);
     }
 
     /**
@@ -63,7 +99,7 @@ public class ScheduleService {
      * @return the new/updated car is stored in the repository
      */
     public Schedule update(Schedule schedule) {
-        Optional<Schedule> scheduleOpt = scheduleRepo.findById(schedule.getId());
+        Optional<Schedule> scheduleOpt = scheduleRepository.findById(schedule.getId());
         if (scheduleOpt.isEmpty())
             throw new ResourceNotFoundException();
 
@@ -88,17 +124,17 @@ public class ScheduleService {
      * @param id the ID number of the car to delete
      */
     public void delete(Long id) {
-        Optional<Schedule> obj = scheduleRepo.findById(id);
+        Optional<Schedule> obj = scheduleRepository.findById(id);
         if (obj.isEmpty())
             throw new ResourceNotFoundException();
-        scheduleRepo.delete(obj.get());
+        scheduleRepository.delete(obj.get());
     }
 
     public List<Schedule> getScheduleForEmployee(Long employeeId) {
-        return scheduleRepo.findAllByEmployeesId(employeeId);
+        return scheduleRepository.findAllByEmployeesId(employeeId);
     }
 
     public List<Schedule> getScheduleForCustomer(Long customerId) {
-        return scheduleRepo.findAllByCustomerId(customerId);
+        return scheduleRepository.findAllByCustomerId(customerId);
     }
 }

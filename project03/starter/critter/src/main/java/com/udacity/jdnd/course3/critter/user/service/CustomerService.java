@@ -32,7 +32,7 @@ public class CustomerService {
      * @return the requested information
      */
     public List<Customer> findAllFetchByPets() {
-        List<Customer> customers = customerRepo.findAllFetchByPets();
+        List<Customer> customers = customerRepo.findAllFetchPets();
         return customers;
     }
 

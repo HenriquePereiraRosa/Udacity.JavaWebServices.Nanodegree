@@ -1,5 +1,7 @@
 package com.udacity.jdnd.course3.critter.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.udacity.jdnd.course3.critter.pet.Pet;
 
 import javax.persistence.*;
@@ -10,6 +12,8 @@ import java.util.List;
  */
 @Entity
 @Table(name = "Customer")
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonIgnoreProperties(value = { "handler", "hibernateLazyInitializer"})
 public class Customer {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -19,7 +23,7 @@ public class Customer {
     private String phoneNumber;
     private String notes;
 
-    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
     private List<Pet> pets;
 
     public Long getId() {

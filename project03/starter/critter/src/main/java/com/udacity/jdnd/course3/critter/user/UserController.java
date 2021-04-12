@@ -30,6 +30,11 @@ public class UserController {
         return customerDTOHelper.findAll();
     }
 
+    @GetMapping("/customer/fetch-pets")
+    public List<CustomerDTO> getAllCustomersWithPets(){
+        return customerDTOHelper.findAllFetchByPets();
+    }
+
     @GetMapping("/customer/{id}")
     public CustomerDTO getCustomerById(@PathVariable Long id){
         return customerDTOHelper.findById(id);
@@ -54,7 +59,7 @@ public class UserController {
 
     @GetMapping("/employee")
     public List<EmployeeDTO> getAllEmployees(){
-        return employeeDTOHelper.findAll();
+         return employeeDTOHelper.findAll();
     }
 
     @GetMapping("/employee/{id}")

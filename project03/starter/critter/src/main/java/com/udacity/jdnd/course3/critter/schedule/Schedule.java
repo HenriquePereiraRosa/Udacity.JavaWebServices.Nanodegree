@@ -1,5 +1,7 @@
 package com.udacity.jdnd.course3.critter.schedule;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.udacity.jdnd.course3.critter.pet.Pet;
 import com.udacity.jdnd.course3.critter.user.Employee;
 import com.udacity.jdnd.course3.critter.user.EmployeeSkill;
@@ -15,18 +17,19 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "Schedule")
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonIgnoreProperties(value = { "handler", "hibernateLazyInitializer"})
 public class Schedule {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employeeId")
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "employee_id", referencedColumnName = "id")
     private List<Employee> employees;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "petId")
+    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
     private List<Pet> pets;
 
     private LocalDate date;

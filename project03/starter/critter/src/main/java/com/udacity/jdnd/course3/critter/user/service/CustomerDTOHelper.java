@@ -1,18 +1,26 @@
 package com.udacity.jdnd.course3.critter.user.service;
 
+import com.udacity.jdnd.course3.critter.pet.Pet;
+import com.udacity.jdnd.course3.critter.pet.PetDTO;
+import com.udacity.jdnd.course3.critter.pet.service.PetDTOHelper;
 import com.udacity.jdnd.course3.critter.user.Customer;
 import com.udacity.jdnd.course3.critter.user.CustomerDTO;
+import com.udacity.jdnd.course3.critter.user.Employee;
+import com.udacity.jdnd.course3.critter.user.EmployeeSkill;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomerDTOHelper {
 
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private PetDTOHelper petDTOHelper;
 
 
     /**
@@ -111,8 +119,12 @@ public class CustomerDTOHelper {
             customerDTO.setNotes(customer.getNotes());
         if (customer.getPhoneNumber() != null && !customer.getPhoneNumber().isEmpty())
             customerDTO.setPhoneNumber(customer.getPhoneNumber());
-        if (customer.getPets() != null && !customer.getPets().isEmpty())
-            customerDTO.setPets(customer.getPets());
+        if (customer.getPets() != null && !customer.getPets().isEmpty()) {
+            List<Pet> pets = new ArrayList<>(customer.getPets());
+            customerDTO.setPets(new ArrayList<>());
+            for(Pet pet: pets)
+                customerDTO.getPets().add(petDTOHelper.objToDTO(pet));
+        }
         return customerDTO;
     }
 
@@ -129,8 +141,12 @@ public class CustomerDTOHelper {
             customer.setNotes(customerDTO.getNotes());
         if (customerDTO.getPhoneNumber() != null && !customerDTO.getPhoneNumber().isEmpty())
             customer.setPhoneNumber(customerDTO.getPhoneNumber());
-        if (customerDTO.getPets() != null && !customerDTO.getPets().isEmpty())
-            customer.setPets(customerDTO.getPets());
+        if (customerDTO.getPets() != null && !customerDTO.getPets().isEmpty()) {
+            List<PetDTO> petsDTO = new ArrayList<>(customerDTO.getPets());
+            customer.setPets(new ArrayList<>());
+            for(PetDTO petDTO: petsDTO)
+                customer.getPets().add(petDTOHelper.dtoToObj(petDTO));
+        }
         return customer;
     }
 }

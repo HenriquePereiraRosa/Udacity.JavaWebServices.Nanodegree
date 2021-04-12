@@ -1,5 +1,8 @@
 package com.udacity.jdnd.course3.critter.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.util.Objects;
@@ -10,6 +13,8 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "Employee")
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonIgnoreProperties(value = { "handler", "hibernateLazyInitializer"})
 public class Employee {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)

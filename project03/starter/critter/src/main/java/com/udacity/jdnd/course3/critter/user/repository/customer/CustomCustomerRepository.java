@@ -13,4 +13,6 @@ import java.util.Optional;
 public interface CustomCustomerRepository {
 
     List<Customer> findCustomerByPetId(Long petId);
+
+    List<Customer> findAllFetchPets();
 }

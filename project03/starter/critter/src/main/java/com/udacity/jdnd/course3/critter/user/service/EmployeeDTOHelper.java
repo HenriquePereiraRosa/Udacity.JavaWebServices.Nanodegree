@@ -25,7 +25,9 @@ public class EmployeeDTOHelper {
     public List<EmployeeDTO> findAll() {
         List<EmployeeDTO> employeeDTOs = new ArrayList<>();
         List<Employee> employees = employeeService.findAll();
-        employees.forEach(employee -> employeeDTOs.add(this.objToDTO(employee)));
+        for (Employee employee : employees) {
+            employeeDTOs.add(this.objToDTO(employee));
+        }
         return employeeDTOs;
     }
 
@@ -48,7 +50,9 @@ public class EmployeeDTOHelper {
     public List<EmployeeDTO> findAllByIds(List<Long> employeeIds) {
         List<EmployeeDTO> employeeDTOs = new ArrayList<>();
         List<Employee> employees = employeeService.findAllByIds(employeeIds);
-        employees.forEach(employee -> employeeDTOs.add(this.objToDTO(employee)));
+        for (Employee employee : employees) {
+            employeeDTOs.add(this.objToDTO(employee));
+        }
         return employeeDTOs;
     }
 
@@ -61,8 +65,6 @@ public class EmployeeDTOHelper {
     public EmployeeDTO save(EmployeeDTO employeeDTO) {
         if (employeeDTO.getName() == null)
             throw new CouldNotBeNullException();
-//        if (employeeRepo.findByName(employeeDTO.getName()).isEmpty())
-//            throw new DuplicatedResourceException();
 
         return this.objToDTO(employeeService
                 .save(this.dtoToObj(employeeDTO)));

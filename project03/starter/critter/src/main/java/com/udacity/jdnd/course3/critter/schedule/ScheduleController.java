@@ -26,9 +26,19 @@ public class ScheduleController {
         return scheduleDTOHelper.findAll();
     }
 
+    @GetMapping("/fetch-pets")
+    public List<ScheduleDTO> getAllSchedulesWithPets() {
+        return scheduleDTOHelper.findAllFetchPets();
+    }
+
+    @GetMapping("/fetch-all")
+    public List<ScheduleDTO> getAllSchedulesfetchAll() {
+        return scheduleDTOHelper.findAllFetchAll();
+    }
+
     @GetMapping("/pet/{petId}")
     public List<ScheduleDTO> getScheduleForPet(@PathVariable Long petId) {
-        return scheduleDTOHelper.findDTOById(petId);
+        return scheduleDTOHelper.findByPetId(petId);
     }
 
     @GetMapping("/employee/{employeeId}")

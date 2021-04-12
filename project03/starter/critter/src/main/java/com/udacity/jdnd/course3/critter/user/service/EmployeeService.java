@@ -1,18 +1,17 @@
 package com.udacity.jdnd.course3.critter.user.service;
 
-import com.google.common.collect.Sets;
 import com.udacity.jdnd.course3.critter.exception.custom.CouldNotBeNullException;
 import com.udacity.jdnd.course3.critter.exception.custom.ResourceNotFoundException;
 import com.udacity.jdnd.course3.critter.user.Employee;
 import com.udacity.jdnd.course3.critter.user.EmployeeRequestDTO;
 import com.udacity.jdnd.course3.critter.user.EmployeeSkill;
 import com.udacity.jdnd.course3.critter.user.repository.employee.EmployeeRepository;
-import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployeeService {
@@ -51,12 +50,12 @@ public class EmployeeService {
      * @return the requested information
      */
     public Employee findAllFetchBySkillAndDaysAvailable(Long id) {
-        Employee employee = employeeRepo
-                .findAllFetchBySkillAndDaysAvailable(id).get(0);
-        if (employee == null)
+        List<Employee> employees = employeeRepo
+                .findAllFetchBySkillAndDaysAvailable(id);
+        if (employees.isEmpty())
             throw new ResourceNotFoundException();
 
-        return employee;
+        return employees.get(0);
     }
 
     /**
@@ -109,13 +108,9 @@ public class EmployeeService {
      * @param employeeRequestDTO
      */
     public List<Employee> getAvailability(EmployeeRequestDTO employeeRequestDTO) {
-
         List<EmployeeSkill> skills = new ArrayList<>(employeeRequestDTO.getSkills());
-        List<DayOfWeek> days = new ArrayList<>();
-        days.add(employeeRequestDTO.getDate().getDayOfWeek());
-
-        List<Employee> employees = employeeRepo.findByDaysAvailableAndSkills(days, skills);
-        return employees;
+        List<Employee> employees = employeeRepo.findAllByDaysAvailableContaining(employeeRequestDTO.getDate().getDayOfWeek());
+        return employees.stream().filter(e -> e.getSkills().containsAll(skills)).collect(Collectors.toList());
     }
 
     /**

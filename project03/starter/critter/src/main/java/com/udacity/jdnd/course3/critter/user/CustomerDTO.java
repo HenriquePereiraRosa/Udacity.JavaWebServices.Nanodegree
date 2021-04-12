@@ -1,6 +1,7 @@
 package com.udacity.jdnd.course3.critter.user;
 
 import com.udacity.jdnd.course3.critter.pet.Pet;
+import com.udacity.jdnd.course3.critter.pet.PetDTO;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class CustomerDTO {
     private String name;
     private String phoneNumber;
     private String notes;
-    private List<Pet> pets;
+    private List<PetDTO> pets;
 
     public Long getId() { return id; }
 
@@ -43,11 +44,11 @@ public class CustomerDTO {
         this.notes = notes;
     }
 
-    public List<Pet> getPets() {
+    public List<PetDTO> getPets() {
         return pets;
     }
 
-    public void setPets(List<Pet> petIds) {
+    public void setPets(List<PetDTO> petIds) {
         this.pets = petIds;
     }
 }

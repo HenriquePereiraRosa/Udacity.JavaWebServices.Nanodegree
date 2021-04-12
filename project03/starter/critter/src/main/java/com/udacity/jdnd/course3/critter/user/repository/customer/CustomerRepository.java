@@ -16,6 +16,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>, Custo
 
     List<Customer> findByName(String name);
 
-    @Query("select c from Customer c left join fetch c.pets")
+    @Query("select c from Customer c join fetch c.pets")
     List<Customer> findAllFetchByPets();
+
 }

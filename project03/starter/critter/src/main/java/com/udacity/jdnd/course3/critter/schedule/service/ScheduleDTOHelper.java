@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ScheduleDTOHelper {
@@ -38,14 +37,50 @@ public class ScheduleDTOHelper {
     }
 
     /**
+     * Gets All Schedule information
+     *
+     * @return the requested information
+     */
+    public List<ScheduleDTO> findAllFetchPets() {
+        List<ScheduleDTO> schedulesDTO = new ArrayList<>();
+        List<Schedule> schedules = scheduleService.findAllFetchPets();
+        for (Schedule schedule : schedules)
+            schedulesDTO.add(this.objToDTO(schedule));
+        return schedulesDTO;
+    }
+
+    /**
+     * Gets All Schedule information
+     *
+     * @return the requested information
+     */
+    public List<ScheduleDTO> findAllFetchAll() {
+        List<ScheduleDTO> schedulesDTO = new ArrayList<>();
+        List<Schedule> schedules = scheduleService.findAllFetchAll();
+        for (Schedule schedule : schedules)
+            schedulesDTO.add(this.objToDTO(schedule));
+        return schedulesDTO;
+    }
+
+    /**
+     * Get Schedule information by ID (or throws exception if non-existent)
+     *
+     * @param id the ID number to gather information on
+     * @return the requested information
+     */
+    public ScheduleDTO findById(Long id) {
+        return this.objToDTO(scheduleService.findById(id));
+    }
+
+    /**
      * Gets Schedule information by ID (or throws exception if non-existent)
      *
      * @param id the ID number to gather information on
      * @return the requested information
      */
-    public List<ScheduleDTO> findDTOById(Long id) {
+    public List<ScheduleDTO> findByPetId(Long id) {
         List<ScheduleDTO> schedulesDTO = new ArrayList<>();
-        List<Schedule> schedules = scheduleService.findById(id);
+        List<Schedule> schedules = scheduleService.findByPetId(id);
         for (Schedule schedule : schedules)
             schedulesDTO.add(this.objToDTO(schedule));
         return schedulesDTO;
@@ -125,10 +160,14 @@ public class ScheduleDTOHelper {
         if (schedule.getId() != null)
             scheduleDTO.setId(schedule.getId());
 
-        if (schedule.getEmployees() != null && !schedule.getEmployees().isEmpty())
-            scheduleDTO.setEmployeeIds(schedule.getEmployees().stream()
-                    .map(Employee::getId)
-                    .collect(Collectors.toList()));
+        if (schedule.getEmployees() != null && !schedule.getEmployees().isEmpty()) {
+//            scheduleDTO.setEmployeeIds(schedule.getEmployees().stream()
+//                    .map(Employee::getId)
+//                    .collect(Collectors.toList()));
+            scheduleDTO.setEmployeeIds(new ArrayList<>());
+            for (Employee employee : schedule.getEmployees())
+                scheduleDTO.getEmployeeIds().add(employee.getId());
+        }
 
         if (schedule.getActivities() != null && !schedule.getActivities().isEmpty())
             scheduleDTO.setActivities(schedule.getActivities());
@@ -136,10 +175,14 @@ public class ScheduleDTOHelper {
         if (schedule.getDate() != null)
             scheduleDTO.setDate(schedule.getDate());
 
-        if (schedule.getPets() != null && !schedule.getPets().isEmpty())
-            scheduleDTO.setPetIds(schedule.getPets().stream()
-                    .map(Pet::getId)
-                    .collect(Collectors.toList()));
+        if (schedule.getPets() != null && !schedule.getPets().isEmpty()) {
+//            scheduleDTO.setPetIds(schedule.getPets().stream()
+//                    .map(Pet::getId)
+//                    .collect(Collectors.toList()));
+            scheduleDTO.setPetIds(new ArrayList<>());
+            for (Pet pet : schedule.getPets())
+                scheduleDTO.getPetIds().add(pet.getId());
+        }
 
         return scheduleDTO;
     }

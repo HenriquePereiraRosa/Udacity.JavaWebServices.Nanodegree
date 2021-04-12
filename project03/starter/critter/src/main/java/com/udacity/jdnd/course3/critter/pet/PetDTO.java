@@ -1,7 +1,5 @@
 package com.udacity.jdnd.course3.critter.pet;
 
-import com.udacity.jdnd.course3.critter.user.CustomerDTO;
-
 import java.time.LocalDate;
 
 /**
