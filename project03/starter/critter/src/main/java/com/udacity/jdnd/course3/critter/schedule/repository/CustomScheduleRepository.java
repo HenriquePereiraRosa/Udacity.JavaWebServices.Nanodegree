@@ -10,5 +10,5 @@ public interface CustomScheduleRepository {
     List<Schedule> findAllFetchPets();
     List<Schedule> findAllFetchAll();
 
-    List<Schedule> findAllByPetId(Long petId);
+    List<Schedule> cFindAllByPetId(Long petId);
 }

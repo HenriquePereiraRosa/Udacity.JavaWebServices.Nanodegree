@@ -8,6 +8,7 @@ import com.udacity.jdnd.course3.critter.user.EmployeeSkill;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -25,12 +26,16 @@ public class Schedule {
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
 
-    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "employee_id", referencedColumnName = "id")
-    private List<Employee> employees;
 
-    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
-    private List<Pet> pets;
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinTable(name = "schedule_employee", joinColumns = @JoinColumn(name = "id"),
+            inverseJoinColumns = @JoinColumn(name = "employee_id"))
+    private List<Employee> employees = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinTable(name = "schedule_pet", joinColumns = @JoinColumn(name = "id"),
+            inverseJoinColumns = @JoinColumn(name = "pet_id"))
+    private List<Pet> pets = new ArrayList<>();
 
     private LocalDate date;
 

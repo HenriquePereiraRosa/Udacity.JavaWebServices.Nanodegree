@@ -10,6 +10,4 @@ import java.util.List;
 public interface CustomEmployeeRepository {
 
     List<Employee> findAllFetchBySkillAndDaysAvailable(Long id);
-
-    List<Employee> findByDaysAvailableAndSkillsJDBC(EmployeeRequestDTO requestDTO);
 }

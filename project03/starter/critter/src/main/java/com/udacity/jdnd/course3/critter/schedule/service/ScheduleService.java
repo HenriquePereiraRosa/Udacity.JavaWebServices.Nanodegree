@@ -2,7 +2,6 @@ package com.udacity.jdnd.course3.critter.schedule.service;
 
 import com.udacity.jdnd.course3.critter.exception.custom.CouldNotBeNullException;
 import com.udacity.jdnd.course3.critter.exception.custom.ResourceNotFoundException;
-import com.udacity.jdnd.course3.critter.pet.Pet;
 import com.udacity.jdnd.course3.critter.pet.repository.PetRepository;
 import com.udacity.jdnd.course3.critter.schedule.Schedule;
 import com.udacity.jdnd.course3.critter.schedule.repository.ScheduleRepository;
@@ -13,7 +12,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ScheduleService {
@@ -74,7 +72,7 @@ public class ScheduleService {
      * @return the requested information
      */
     public List<Schedule> findByPetId(Long id) {
-        List<Schedule> schedules = scheduleRepository.findAllByPetId(id);
+        List<Schedule> schedules = scheduleRepository.findAllByPetsId(id);
         if (schedules.isEmpty())
             throw new ResourceNotFoundException();
         return schedules;

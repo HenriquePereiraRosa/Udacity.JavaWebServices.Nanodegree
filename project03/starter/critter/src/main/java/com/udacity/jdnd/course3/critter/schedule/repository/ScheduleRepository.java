@@ -11,6 +11,8 @@ import java.util.List;
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long>, CustomScheduleRepository {
 
+    List<Schedule> findAllFetchPets();
+
     @Query("from Schedule s where s.id  = id")
     List<Schedule> findAllById(@Param("id") Long id);
 

@@ -119,11 +119,11 @@ public class ScheduleRepositoryImpl implements CustomScheduleRepository {
     }
 
     @Override
-    public List<Schedule> findAllByPetId(Long petId) {
+    public List<Schedule> cFindAllByPetId(Long petId) {
 
         StringBuilder sQuery = new StringBuilder("select * " +
                 " from Schedule s " +
-                "   left join Pet p on s.id = p.schedule_id " +
+                "   join Pet p on s.id = p.schedule_id " +
                 " where p.id = :petId");
 
         RowMapper rowMapper = (rs, rowNum) -> {
