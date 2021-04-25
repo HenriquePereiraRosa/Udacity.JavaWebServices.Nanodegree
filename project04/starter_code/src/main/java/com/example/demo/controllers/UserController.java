@@ -39,14 +39,14 @@ public class UserController {
 	@PostMapping("/create")
 	public ResponseEntity<User> createUser(@RequestBody CreateUserRequest userReq) {
 
-		log.info(" -> Creating User: "  +  userReq.getUsername());
+		log.info("Creating User: "  +  userReq.getUsername());
 
 		User user = new User();
 		user.setUsername(userReq.getUsername());
 		if(userReq.getPassword() != null
 				&& (userReq.getPasswordConfirm().length() < 7
 				|| !userReq.getPassword().equals(userReq.getPasswordConfirm()))) {
-			log.error("Error with password from User: " + userReq.getUsername());
+			log.error("ERROR - with password from User: " + userReq.getUsername());
 			return ResponseEntity.badRequest().build();
 		}
 
@@ -56,6 +56,8 @@ public class UserController {
 		cartRepository.save(cart);
 		user.setCart(cart);
 		userRepository.save(user);
+
+		log.info("User Saved! Id: "  +  user.getId());
 		return ResponseEntity.ok(user);
 	}
 	

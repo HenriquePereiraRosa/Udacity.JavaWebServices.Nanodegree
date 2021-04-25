@@ -36,3 +36,5 @@ build/
 *.log
 **/logs/**
 **/logs.test/**
+
+project04/starter_code/logs.tests/

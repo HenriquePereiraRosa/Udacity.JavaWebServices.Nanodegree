@@ -8,7 +8,7 @@ public class ModifyCartRequest {
 	private String username;
 	
 	@JsonProperty
-	private long itemId;
+	private Long itemId;
 	
 	@JsonProperty
 	private int quantity;
@@ -21,11 +21,11 @@ public class ModifyCartRequest {
 		this.username = username;
 	}
 
-	public long getItemId() {
+	public Long getItemId() {
 		return itemId;
 	}
 
-	public void setItemId(long itemId) {
+	public void setItemId(Long itemId) {
 		this.itemId = itemId;
 	}
 

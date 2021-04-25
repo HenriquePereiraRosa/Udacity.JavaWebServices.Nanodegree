@@ -1,7 +1,7 @@
 package com.example.demo.config;
 
 import com.example.demo.security.JWTAuthenticationFilter;
-import com.example.demo.security.JWTAuthenticationVerficationFilter;
+import com.example.demo.security.JWTAuthenticationVerificationFilter;
 import com.example.demo.security.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -32,7 +32,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager()))
-                .addFilter(new JWTAuthenticationVerficationFilter(authenticationManager()))
+                .addFilter(new JWTAuthenticationVerificationFilter(authenticationManager()))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 

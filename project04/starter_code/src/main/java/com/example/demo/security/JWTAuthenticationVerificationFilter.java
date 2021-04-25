@@ -15,10 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class JWTAuthenticationVerficationFilter extends BasicAuthenticationFilter {
+public class JWTAuthenticationVerificationFilter extends BasicAuthenticationFilter {
 
-
-    public JWTAuthenticationVerficationFilter(AuthenticationManager authManager) {
+    public JWTAuthenticationVerificationFilter(AuthenticationManager authManager) {
         super(authManager);
     }
 

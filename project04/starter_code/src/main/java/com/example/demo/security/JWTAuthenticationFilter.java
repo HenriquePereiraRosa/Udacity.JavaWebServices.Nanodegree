@@ -5,9 +5,13 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.example.demo.config.JWTCustomSecurityConstants;
 import com.example.demo.model.persistence.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -20,6 +24,7 @@ import java.util.Date;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
+    Log log = LogFactory.getLog(this.getClass());
     private AuthenticationManager authenticationManager;
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
@@ -37,7 +42,14 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                             credentials.getUsername(),
                             credentials.getPassword(),
                             new ArrayList<>()));
+        } catch (AuthenticationException e) {
+            logger.error("ERROR - Authentication failed. user " + e.getLocalizedMessage());
+            throw new BadCredentialsException("invalid login info");
         } catch (IOException e) {
+            log.error("ERROR -  IOException on auth", e);
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            log.error("ERROR - Exception on auth", e);
             throw new RuntimeException(e);
         }
     }
@@ -53,5 +65,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withExpiresAt(new Date(System.currentTimeMillis() + JWTCustomSecurityConstants.EXPIRATION_TIME))
                 .sign(Algorithm.HMAC512(JWTCustomSecurityConstants.SECRET.getBytes()));
         res.addHeader(JWTCustomSecurityConstants.HEADER_STRING, JWTCustomSecurityConstants.TOKEN_PREFIX + token);
+
+        log.info("Logged in successfully:"  +  auth.getName());
     }
 }
