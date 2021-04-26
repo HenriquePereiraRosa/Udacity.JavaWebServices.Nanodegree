@@ -44,6 +44,7 @@ public class UserController {
 		User user = new User();
 		user.setUsername(userReq.getUsername());
 		if(userReq.getPassword() != null
+				&& userReq.getPasswordConfirm() != null
 				&& (userReq.getPasswordConfirm().length() < 7
 				|| !userReq.getPassword().equals(userReq.getPasswordConfirm()))) {
 			log.error("ERROR - with password from User: " + userReq.getUsername());
