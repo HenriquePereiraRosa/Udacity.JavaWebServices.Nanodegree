@@ -35,10 +35,15 @@ build/
 
 ### Log files###
 *.log
-**/logs/**
-**/logs.test/**
+**/logs/
+**/logs.test/
 
-project04/starter_code/logs.tests/
+### Log files###
+*.log
+/logs/
+/logs.test/
+
+### General ###
 *#
 *.iml
 *.ipr
